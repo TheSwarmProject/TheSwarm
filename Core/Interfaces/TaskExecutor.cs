@@ -41,8 +41,12 @@ public abstract class TaskExecutor {
         if (TaskSet is null)
             throw new Exception("TaskSet was not initialized. Assign it using SetExecutorTaskSet call first");
         
-        for (int index = 0; index < quantity; index++)
-            executorThreads.Add(new Thread(() => { TaskLoop(TaskSet); }));
+        for (int index = 0; index < quantity; index++){
+            Thread thread = new Thread(() => { TaskLoop(TaskSet); });
+            executorThreads.Add(thread);
+            thread.Start();
+        }
+            
 
         return this;
     }

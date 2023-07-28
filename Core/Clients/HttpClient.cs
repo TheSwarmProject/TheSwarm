@@ -39,10 +39,7 @@ public class SwarmHttpClient : SwarmClient {
         }
 
         DateTime startTime = DateTime.Now;
-        // TODO: There MUST be a more elegant way to stall the execution until we're not over the limit, but for the time being this will do.
-        while (!TaskExecutor.isGreen) {
-            Thread.Sleep(10);
-        }
+        WaitForGreenLight();
         HttpResponseMessage httpResponse = client.Send(request);
         TaskExecutor.ReportRequestExecuted();
         DateTime endTime = DateTime.Now;
@@ -50,11 +47,11 @@ public class SwarmHttpClient : SwarmClient {
         string responseContent = new StreamReader(httpResponse.Content.ReadAsStream()).ReadToEnd();
 
         Response response =  new Response(name, 
-                                            Methods.GET, 
-                                            (int)(endTime - startTime).TotalMilliseconds,
-                                            httpResponse.Content.ReadAsStream().Length,
-                                            (int)httpResponse.StatusCode >= 400 ? true : false,
-                                            (int)httpResponse.StatusCode >= 400 ? responseContent : "");
+                                          Methods.GET, 
+                                          (int)(endTime - startTime).TotalMilliseconds,
+                                          httpResponse.Content.ReadAsStream().Length,
+                                          (int)httpResponse.StatusCode >= 400 ? true : false,
+                                          (int)httpResponse.StatusCode >= 400 ? responseContent : "");
         TaskExecutor.LogEntry(response);
 
         return response;

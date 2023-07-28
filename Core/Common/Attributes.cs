@@ -13,34 +13,60 @@ public class SwarmTaskSet : System.Attribute {
     }
 }
 
-[System.AttributeUsage(System.AttributeTargets.Method)]
-public class SwarmTaskSetSetup: System.Attribute {}
+/// <summary>
+/// For convenience - we use Task set attributes as both attribute annotations AND method containers (method is to be assigned during TaskSet initialization).
+/// With that in mind, we create a base type for containing said method and handling it's initialization. The rest is type-unique.
+/// </summary>
+public class MethodContainer : System.Attribute {
+    public int DelayAfterTaskMs {get; set;} = 0;
+    public Action? Method {get; private set;}
 
-[System.AttributeUsage(System.AttributeTargets.Method)]
-public class SwarmTaskSetTeardown: System.Attribute {}
+    public void SetMethod(Action method) => this.Method = method;
+    public void Execute() {
+        if (Method is not null) {
+            Method();
 
-[System.AttributeUsage(System.AttributeTargets.Method)]
-public class SwarmBeforeTask: System.Attribute {}
-
-[System.AttributeUsage(System.AttributeTargets.Method)]
-public class SwarmAfterTask: System.Attribute {}
+            if (DelayAfterTaskMs > 0)
+                Thread.Sleep(DelayAfterTaskMs);
+        }
+    }
+}
 
 /// <summary>
 /// This attribute serves as both meta-data container and a container for method itself
 /// It is used to encapsulate the target method for TaskSet to use later
 /// </summary>
 [System.AttributeUsage(System.AttributeTargets.Method)]
-public class SwarmTask : System.Attribute {
-    public int Weight {get; set;}
-    public int DelayAfterTaskMs {get; set;}
-    public Action? Method {get; private set;}
+public class SwarmTaskSetSetup: MethodContainer {}
 
-    public SwarmTask() {
-        this.Weight = 0;
-        this.DelayAfterTaskMs = 0;
-    }
+/// <summary>
+/// This attribute serves as both meta-data container and a container for method itself
+/// It is used to encapsulate the target method for TaskSet to use later
+/// </summary>
+[System.AttributeUsage(System.AttributeTargets.Method)]
+public class SwarmTaskSetTeardown: MethodContainer {}
 
-    public void SetMethod(Action method) => this.Method = method;
+/// <summary>
+/// This attribute serves as both meta-data container and a container for method itself
+/// It is used to encapsulate the target method for TaskSet to use later
+/// </summary>
+[System.AttributeUsage(System.AttributeTargets.Method)]
+public class SwarmBeforeTask: MethodContainer {}
+
+/// <summary>
+/// This attribute serves as both meta-data container and a container for method itself
+/// It is used to encapsulate the target method for TaskSet to use later
+/// </summary>
+[System.AttributeUsage(System.AttributeTargets.Method)]
+public class SwarmAfterTask: MethodContainer {}
+
+/// <summary>
+/// This attribute serves as both meta-data container and a container for method itself
+/// It is used to encapsulate the target method for TaskSet to use later
+/// </summary>
+[System.AttributeUsage(System.AttributeTargets.Method)]
+public class SwarmTask : MethodContainer {
+    public int Weight {get; set;} = 0;
 }
 
 [System.AttributeUsage(System.AttributeTargets.Class)]
@@ -54,6 +80,10 @@ public class ExecutorParameters : System.Attribute {
     }
 }
 
+/// <summary>
+/// This attibute is used as a marker - it tells executor to initialize task executor instance for a client, marked with this attribute.
+/// If it is not registered - results will not be submitted to the listener and thus not added to the report.
+/// </summary>
 [System.AttributeUsage(System.AttributeTargets.Property)]
 public class RegisterSwarmClient: System.Attribute {}
 

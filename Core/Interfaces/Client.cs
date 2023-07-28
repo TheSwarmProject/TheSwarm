@@ -3,5 +3,14 @@ namespace TheSwarm.Interfaces;
 public abstract class SwarmClient {
     protected TaskExecutor TaskExecutor {get; set;}
 
-    protected void SetTaskExecutor(TaskExecutor executor) => TaskExecutor = executor;
+    public void SetTaskExecutor(TaskExecutor executor) => TaskExecutor = executor;
+
+    private bool LightIsGreen() => TaskExecutor.isGreen;
+
+    protected void WaitForGreenLight() {
+        // TODO: There MUST be a more elegant way to stall the execution until we're not over the limit, but for the time being this will do.
+        while (!LightIsGreen()) {
+            Thread.Sleep(10);
+        }
+    }
 }

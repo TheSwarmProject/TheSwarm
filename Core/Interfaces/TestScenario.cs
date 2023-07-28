@@ -36,7 +36,7 @@ public class TestScenario {
             .FirstOrDefault();
 
         if (result is not null)
-            this.TaskExecutor.TaskSet = new TaskSet(result);
+            this.TaskExecutor.TaskSet = new TaskSet(result, TaskExecutor);
         else
             throw new Exception($"Couldn't find a task set type with TaskSetID of {taskSetID}");
 
