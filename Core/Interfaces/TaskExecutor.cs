@@ -10,8 +10,8 @@ public abstract class TaskExecutor {
     protected ResultsListener resultsListener {get; set;}
     protected List<Thread> executorThreads {get;} = new List<Thread>();
 
-    public Type? TaskSet {get; set;}
-    protected abstract void TaskLoop(Type taskSet);
+    internal TaskSet? TaskSet {get; set;}
+    internal abstract void TaskLoop(TaskSet taskSet);
     
     protected int CurrentRequestsPerSecond {get; set;}
     protected int RequestsPerSecondLimit {get; set;}

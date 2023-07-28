@@ -17,6 +17,11 @@ public class SwarmHttpClient : SwarmClient {
         this.client = new HttpClient();
     }
 
+    public SwarmHttpClient(string baseURI) {
+        this.client = new HttpClient();
+        this.BaseURI = baseURI;
+    }
+
     /// <summary>
     /// Main caller for GET requests. After executing the request - reports the results to ResultsListener
     /// and returns a Response object.

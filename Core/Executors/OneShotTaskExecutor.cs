@@ -10,7 +10,7 @@ namespace TheSwarm.Components.Executors;
 public class OneShotTaskExecutor : TaskExecutor {
     public OneShotTaskExecutor(ResultsListener resultsListener) : base(resultsListener) {}
 
-    protected override void TaskLoop(Type taskSet) {
+    internal override void TaskLoop(TaskSet taskSet) {
         
     }
 }

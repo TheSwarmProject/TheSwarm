@@ -1,3 +1,4 @@
+using System.Reflection;
 using TheSwarm.Components.Listener;
 using TheSwarm.Components.Executors;
 using TheSwarm.Attributes;
@@ -27,11 +28,17 @@ public class TestScenario {
         return this;
     }
 
-    public TestScenario SetExecutorTaskSet(Type taskSetType) {
-        if (taskSetType.IsSubclassOf(typeof(TaskSet)))
-            this.TaskExecutor.TaskSet = taskSetType;
+    public TestScenario SetExecutorTaskSet(string taskSetID) {
+        Type result = AppDomain.CurrentDomain.GetAssemblies()
+	        .SelectMany(a => a.GetTypes()
+                .Where(t => t.IsDefined(typeof(SwarmTaskSet))))
+                .Where(t => ((SwarmTaskSet) t.GetCustomAttribute(typeof(SwarmTaskSet))).TaskSetID == taskSetID)
+            .FirstOrDefault();
+
+        if (result is not null)
+            this.TaskExecutor.TaskSet = new TaskSet(result);
         else
-            throw new Exception($"Provided task set was of type {taskSetType.GetType()}. Subclass of TaskSet is required.");
+            throw new Exception($"Couldn't find a task set type with TaskSetID of {taskSetID}");
 
         return this;
     }
