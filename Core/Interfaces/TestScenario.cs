@@ -10,7 +10,7 @@ public class TestScenario {
     public TaskExecutor TaskExecutor {get; private set;}
     public ResultsListener ResultsListener {get; private set;}
 
-    public TestScenario(ExecutorType executorType) {
+    public TestScenario(ExecutorType executorType, SwarmMode mode = SwarmMode.Local) {
         this.ResultsListener = new ResultsListener();
         switch (executorType) {
             case ExecutorType.OneShotExecutor:
@@ -36,7 +36,7 @@ public class TestScenario {
             .FirstOrDefault();
 
         if (result is not null)
-            this.TaskExecutor.TaskSet = new TaskSet(result, TaskExecutor);
+            this.TaskExecutor.TaskSet = result;
         else
             throw new Exception($"Couldn't find a task set type with TaskSetID of {taskSetID}");
 
@@ -47,6 +47,7 @@ public class TestScenario {
         if (scenarioRunner is null) {
             throw new Exception("Executor sequence was not specified. Aborting");
         }
+        TaskExecutor.IsGreen = true;
         scenarioRunner.Start();
     }
 }

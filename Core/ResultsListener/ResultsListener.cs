@@ -40,15 +40,15 @@ public class ResultsListener {
     }
 
     public void LogEntry(Response response) {
-        string key = $"({response.method}){response.name}";
+        string key = $"({response.Method}){response.Name}";
         if (!resultTrackers.ContainsKey(key)) {
-            resultTrackers[key] = new ResultTracker(response.name, response.method);
+            resultTrackers[key] = new ResultTracker(response.Name, response.Method);
         }
 
         ResultTracker tracker = resultTrackers[key];
-        tracker.LogEntry(response.responseTimeMs, response.contentLengthBytes);
-        if (response.isFailed) {
-            tracker.LogFailure(response.failureMessage);
+        tracker.LogEntry(response.ResponseTimeMs, response.ContentLengthBytes);
+        if (response.IsFailed) {
+            tracker.LogFailure(response.FailureMessage);
         }
     }
 

@@ -1,3 +1,5 @@
+using System.Text;
+
 namespace TheSwarm.Common; 
 
 /// <summary>
@@ -5,19 +7,24 @@ namespace TheSwarm.Common;
 /// We use separate type to encapsulate all required fields into it, instead of providing a bunch of scatterred values.
 /// </summary>
 public class Response {
-    public string name {get;}
-    public string method {get;}
-    public int responseTimeMs {get;}
-    public long contentLengthBytes {get;}
-    public bool isFailed {get;}
-    public string failureMessage {get;}
+    public string Name {get;}
+    public string Method {get;}
+    public int ResponseTimeMs {get;}
+    public byte[] ByteContent {get;}
+    public string StringContent {get;} = "";
+    public long ContentLengthBytes {get;}
+    public bool IsFailed {get;}
+    public string FailureMessage {get;}
 
-    public Response(string name, string method, int responseTimeMs, long contentLengthBytes, bool isFailed = false, string failureMessage = "") {
-        this.name               = name;
-        this.method             = method;
-        this.responseTimeMs     = responseTimeMs;
-        this.contentLengthBytes = contentLengthBytes;
-        this.isFailed           = isFailed;
-        this.failureMessage     = failureMessage;
+    public Response(string name, string method, int responseTimeMs, byte[] byteContent, bool isString = true, bool isFailed = false, string failureMessage = "") {
+        this.Name               = name;
+        this.Method             = method;
+        this.ResponseTimeMs     = responseTimeMs;
+        this.ByteContent        = byteContent;
+        if (isString)
+            this.StringContent  = Encoding.UTF8.GetString(this.ByteContent, 0, this.ByteContent.Length);
+        this.ContentLengthBytes = byteContent.Length;
+        this.IsFailed           = isFailed;
+        this.FailureMessage     = failureMessage;
     }
 }

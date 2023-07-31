@@ -49,7 +49,8 @@ public class SwarmHttpClient : SwarmClient {
         Response response =  new Response(name, 
                                           Methods.GET, 
                                           (int)(endTime - startTime).TotalMilliseconds,
-                                          httpResponse.Content.ReadAsStream().Length,
+                                          httpResponse.Content.ReadAsByteArrayAsync().Result,
+                                          true,
                                           (int)httpResponse.StatusCode >= 400 ? true : false,
                                           (int)httpResponse.StatusCode >= 400 ? responseContent : "");
         TaskExecutor.LogEntry(response);

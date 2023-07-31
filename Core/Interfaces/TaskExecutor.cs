@@ -8,14 +8,14 @@ namespace TheSwarm.Interfaces;
 /// </summary>
 public abstract class TaskExecutor {
     protected ResultsListener resultsListener {get; set;}
-    protected List<Thread> executorThreads {get;} = new List<Thread>();
+    protected List<ExecutorThread> executorThreads {get;} = new List<ExecutorThread>();
 
-    internal TaskSet? TaskSet {get; set;}
-    internal abstract void TaskLoop(TaskSet taskSet);
+    internal Type? TaskSet {get; set;}
+    internal abstract void TaskLoop(ExecutorThread executor);
     
     protected int CurrentRequestsPerSecond {get; set;}
     protected int RequestsPerSecondLimit {get; set;}
-    public bool isGreen {get; private set;}
+    public bool IsGreen {get; set;}
 
     public TaskExecutor(ResultsListener resultsListener) {
         this.resultsListener = resultsListener;            
@@ -32,8 +32,8 @@ public abstract class TaskExecutor {
 
     public void ReportRequestExecuted() {
         CurrentRequestsPerSecond += 1;
-        if (CurrentRequestsPerSecond >= RequestsPerSecondLimit) {
-            isGreen = false;
+        if (RequestsPerSecondLimit > 0 && CurrentRequestsPerSecond >= RequestsPerSecondLimit) {
+            IsGreen = false;
         }
     }
 
@@ -42,7 +42,7 @@ public abstract class TaskExecutor {
             throw new Exception("TaskSet was not initialized. Assign it using SetExecutorTaskSet call first");
         
         for (int index = 0; index < quantity; index++){
-            Thread thread = new Thread(() => { TaskLoop(TaskSet); });
+            ExecutorThread thread = new ExecutorThread(this);
             executorThreads.Add(thread);
             thread.Start();
         }

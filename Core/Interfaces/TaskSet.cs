@@ -18,13 +18,13 @@ internal class TaskSet {
     private List<SwarmTask> Tasks {get; init;} = new List<SwarmTask>();
     private int totalTasksWeight {get; init;} = 0;
 
-    public TaskSet(Type type, TaskExecutor executor) {
+    public TaskSet(TaskExecutor executor) {
         this.Executor = executor;
-        if (type.GetCustomAttribute(typeof(SwarmTaskSet)) is not null) {
-            this.taskSetInstance = Activator.CreateInstance(type);
+        if (executor.TaskSet.GetCustomAttribute(typeof(SwarmTaskSet)) is not null) {
+            this.taskSetInstance = Activator.CreateInstance(executor.TaskSet);
             this.taskSetParams = (SwarmTaskSet) taskSetInstance.GetType().GetCustomAttribute(typeof(SwarmTaskSet));
         } else
-            throw new Exception($"{type.ToString()} is not marked as SwarmTaskSet. Make sure it has SwarmTaskSet annotation added and try again");
+            throw new Exception($"{executor.TaskSet.ToString()} is not marked as SwarmTaskSet. Make sure it has SwarmTaskSet annotation added and try again");
 
         MethodInfo? m = this.taskSetInstance.GetType().GetMethods().Where(m => m.GetCustomAttributes(typeof(SwarmTaskSetSetup), false).Length > 0).FirstOrDefault();
         if (m is not null) {
@@ -73,6 +73,11 @@ internal class TaskSet {
         Console.WriteLine($"Tasks: {this.Tasks.ToArray()}");
     }
 
+    /// <summary>
+    /// Picks random task from the pool.
+    /// NOTE: If task weights were set - it will pick it using PickRandomTaskWithWeight method (i.e. using weight as factor). If not - it will pick one at random.
+    /// </summary>
+    /// <returns>SwarmTask to execute</returns>
     public SwarmTask PickRandomTask() {
         if (totalTasksWeight > 0)
             return PickRandomTaskWithWeight();
@@ -82,6 +87,11 @@ internal class TaskSet {
 
     public List<SwarmTask> GetAllTasks() => Tasks;
 
+    /// <summary>
+    /// Picks random task, based on their weight.
+    /// If no tasks were picked by an algorithm - a random task will be picked.
+    /// </summary>
+    /// <returns>SwarmTask to execute</returns>
     private SwarmTask PickRandomTaskWithWeight() {
         int randomInt = rnd.Next(0, totalTasksWeight);
 

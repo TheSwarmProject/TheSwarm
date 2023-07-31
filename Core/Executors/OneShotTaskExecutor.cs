@@ -11,18 +11,32 @@ namespace TheSwarm.Components.Executors;
 public class OneShotTaskExecutor : TaskExecutor {
     public OneShotTaskExecutor(ResultsListener resultsListener) : base(resultsListener) {}
 
-    internal override void TaskLoop(TaskSet taskSet) {
+    internal override void TaskLoop(ExecutorThread executor) {
+        TaskSet taskSet = executor.TaskSet;
+
         if (taskSet.Setup is not null)
-            taskSet.Setup.Execute();
+            if (executor.IsRunning)
+                taskSet.Setup.Execute();
+            else
+                return;
 
         foreach(SwarmTask task in taskSet.GetAllTasks()) {
             if (taskSet.BeforeTask is not null)
-                taskSet.BeforeTask.Execute();
+                if (executor.IsRunning)
+                    taskSet.BeforeTask.Execute();
+                else
+                    break;
 
-            task.Execute();
+            if (executor.IsRunning)
+                task.Execute();
+            else
+                break;
 
             if (taskSet.AfterTask is not null)
-                taskSet.AfterTask.Execute();
+                if (executor.IsRunning)
+                    taskSet.AfterTask.Execute();
+                else
+                    break;
         }
             
         if (taskSet.Teardown is not null)
