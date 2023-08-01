@@ -55,12 +55,12 @@ public class ResultTracker {
         requestsCount += 1;
         totalResponseTime += responseTimeMs;
         totalContentLength += contentLengthBytes;
-        if (minResponseTime > responseTimeMs) {
+        if (minResponseTime == 0)
             minResponseTime = responseTimeMs;
-        }
-        if (maxResponseTime < responseTimeMs) {
+        else if (minResponseTime > responseTimeMs)
+            minResponseTime = responseTimeMs;
+        if (maxResponseTime < responseTimeMs) 
             maxResponseTime = responseTimeMs;
-        }
     }
 
     /// <summary>
@@ -109,6 +109,8 @@ public class ResultTracker {
         try {
             // TODO: Decompose this calculation. The level of inception here is off the charts =\
             averageRequestsPerSecond = (requestsCount / Math.Round((double)((((DateTimeOffset)lastUpdateTick).ToUnixTimeMilliseconds() - ((DateTimeOffset)startPoint).ToUnixTimeMilliseconds()) / 1000), 2));
+            if (Double.IsInfinity(averageRequestsPerSecond))
+                averageRequestsPerSecond = 0;
         } catch (DivideByZeroException) {
             averageRequestsPerSecond = 0;
         }
@@ -147,7 +149,7 @@ public class ResultTracker {
 public class Results {
     private string name {get; set;}
     private string method {get; set;}
-    private Dictionary<DateTime, ResultEntry> resultsDict {get; set;} = new Dictionary<DateTime, ResultEntry>();
+    public Dictionary<DateTime, ResultEntry> resultsDict {get; set;} = new Dictionary<DateTime, ResultEntry>();
 
     public Results(string name, string method) {
         this.name = name;
@@ -172,28 +174,29 @@ public class Results {
 /// object into ResultListener's list.
 /// </summary>
 public class ResultEntry {
-    public int                          failuresCount               {get; set;}
+    public int                          failuresCount               {get; set;} = 0;
     public Dictionary<String, int>      failuresOccurrences         {get;}
-    public double                       failRate                    {get; set;}
-    public int                          requestsCount               {get; set;}
-    public long                         averageResponseTime         {get; set;}
-    public long                         averageFailedResponseTime   {get; set;}
-    public long                         minResponseTime             {get; set;}
-    public long                         maxResponseTime             {get; set;}
-    public double                       averageRequestsPerSecond    {get; set;}
-    public long                         averageContentLength        {get; set;}
-    public long                         totalContentLength          {get; set;}
+    public double                       failRate                    {get; set;} = 0;
+    public int                          requestsCount               {get; set;} = 0;
+    public long                         averageResponseTime         {get; set;} = 0;
+    public long                         averageFailedResponseTime   {get; set;} = 0;
+    public long                         minResponseTime             {get; set;} = 0;
+    public long                         maxResponseTime             {get; set;} = 0;
+    public double                       averageRequestsPerSecond    {get; set;} = 0;
+    public long                         averageContentLength        {get; set;} = 0;
+    public long                         totalContentLength          {get; set;} = 0;
 
     public ResultEntry(ResultTracker tracker) {
         this.failuresCount              = tracker.failuresCount;
         this.failuresOccurrences        = new Dictionary<string, int>(tracker.failuresOccurrences);
         this.failRate                   = tracker.failRate;
         this.requestsCount              = tracker.requestsCount;
-        this.averageFailedResponseTime  = tracker.averageResponseTime;
+        this.averageResponseTime        = tracker.averageResponseTime;
         this.averageFailedResponseTime  = tracker.averageFailedResponseTime;
         this.minResponseTime            = tracker.minResponseTime;
         this.maxResponseTime            = tracker.maxResponseTime;
         this.averageRequestsPerSecond   = tracker.averageRequestsPerSecond;
+        this.averageContentLength       = tracker.averageContentLength;
         this.totalContentLength         = tracker.totalContentLength;
     }
 }

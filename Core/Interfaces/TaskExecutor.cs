@@ -96,6 +96,7 @@ public abstract class TaskExecutor {
             }
 
             resultsListener.Stop();
+            resultsListener.GenerateReport();
         }    
     }
 }

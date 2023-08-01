@@ -1,6 +1,8 @@
 using TheSwarm.Common;
 using TheSwarm.Utils;
 using TheSwarm.Attributes;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 
 namespace TheSwarm.Components.Listener;
 
@@ -10,7 +12,8 @@ namespace TheSwarm.Components.Listener;
 /// </summary>
 public class ResultsListener {
     private SwarmListenerMode mode {get; init;}
-    private Dictionary<string, ResultTracker> resultTrackers {get; set;} = new Dictionary<string, ResultTracker>();
+    private Dictionary<string, ResultTracker> resultTrackers {get; init;} = new Dictionary<string, ResultTracker>();
+    private List<DateTime> timestamps {get; init;} = new List<DateTime>();
     private Thread watcherThread {get; set;}
     private bool threadActive {get; set;}
 
@@ -55,6 +58,34 @@ public class ResultsListener {
         }
     }
 
+    public void GenerateReport() {
+        if (mode == SwarmListenerMode.Local || mode == SwarmListenerMode.Hub) {
+            // TODO: We'll need to parametrize it during listener initialization in SwarmBuilder. For the time being we hard-code it
+            string dirName = $"Results/{DateTime.Now.ToString("yyyy-MM-ddTHH-mm-ss")}";
+            if (!Directory.Exists(dirName))
+                Directory.CreateDirectory(dirName);
+
+            // We'll do away with anonymous objects here, since these aren't used anywhere else
+            var results = new List<object>();
+            foreach (KeyValuePair<string, ResultTracker> tracker in resultTrackers)
+                results.Add(new {
+                    Name = tracker.Key,
+                    Data = tracker.Value.results.resultsDict
+                });
+            
+            File.WriteAllText(
+                $"{dirName}/results.json",
+                JsonSerializer.Serialize(
+                    new {
+                        Results = results,
+                        Timestamps = timestamps
+                    }, 
+                    new JsonSerializerOptions() {
+                        NumberHandling = JsonNumberHandling.AllowNamedFloatingPointLiterals
+                        }));
+        }
+    }
+
 
     // ###########################################################################################
     // Service methods
@@ -66,7 +97,8 @@ public class ResultsListener {
     /// </summary>
     /// <param name="resetData">Flag on whether to reset accumulated data or not</param>
     private void TickResults(bool resetData = true) {
-        DateTime timestamp = DateTime.Now;;
+        DateTime timestamp = DateTime.Now;
+        timestamps.Add(timestamp);
 
         foreach(string key in resultTrackers.Keys) {
             ResultTracker tracker = resultTrackers[key];
