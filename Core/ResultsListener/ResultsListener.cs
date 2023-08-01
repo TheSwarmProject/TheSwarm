@@ -1,5 +1,6 @@
 using TheSwarm.Common;
 using TheSwarm.Utils;
+using TheSwarm.Attributes;
 
 namespace TheSwarm.Components.Listener;
 
@@ -8,13 +9,15 @@ namespace TheSwarm.Components.Listener;
 /// prints current values (if specified) and generates output report as either raw JSON or single-page HTML.
 /// </summary>
 public class ResultsListener {
+    private SwarmListenerMode mode {get; init;}
     private Dictionary<string, ResultTracker> resultTrackers {get; set;} = new Dictionary<string, ResultTracker>();
     private Thread watcherThread {get; set;}
     private bool threadActive {get; set;}
 
     private bool printData {get; set;}
 
-    public ResultsListener(bool printData = true) {
+    public ResultsListener(SwarmListenerMode mode = SwarmListenerMode.Local, bool printData = true) {
+        this.mode = mode;
         this.printData = printData;
 
         watcherThread = new Thread(() => {

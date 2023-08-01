@@ -107,7 +107,7 @@ public enum ExecutorType {
     SequentialExecutor
 }
 
-public enum SwarmMode {
+public enum SwarmListenerMode {
     Local,
     Hub,
     Node

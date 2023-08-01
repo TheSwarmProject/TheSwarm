@@ -5,30 +5,26 @@ using TheSwarm.Attributes;
 
 namespace TheSwarm.Interfaces;
 
-public class TestScenario {
+public class SwarmPreparedTestScenario {
     private Thread? scenarioRunner {get; set;}
-    public TaskExecutor TaskExecutor {get; private set;}
-    public ResultsListener ResultsListener {get; private set;}
+    public TaskExecutor? TaskExecutor {get; private set;}
+    public ResultsListener? ResultsListener {get; private set;}
 
-    public TestScenario(ExecutorType executorType, SwarmMode mode = SwarmMode.Local) {
-        this.ResultsListener = new ResultsListener();
-        switch (executorType) {
-            case ExecutorType.OneShotExecutor:
-                this.TaskExecutor = new OneShotTaskExecutor(ResultsListener);
-                break;
-            default:
-                this.TaskExecutor = new OneShotTaskExecutor(ResultsListener);
-                break;
-        }
-    }
+    internal SwarmPreparedTestScenario() {}
 
-    public TestScenario SetExecutorSequence(Action<TaskExecutor> action) {
-        this.scenarioRunner = new Thread(() => {action(TaskExecutor);});
+    internal SwarmPreparedTestScenario SetTaskExecutor(TaskExecutor executor) { TaskExecutor = executor; return this; }
+    internal SwarmPreparedTestScenario SetResultsListener(ResultsListener listener) { ResultsListener = listener; return this; }
+
+    internal SwarmPreparedTestScenario SetExecutorSequence(Action<TaskExecutor> action) {
+        this.scenarioRunner = new Thread(() => {
+            action(TaskExecutor);
+            TaskExecutor.Finish();
+            });
 
         return this;
     }
 
-    public TestScenario SetExecutorTaskSet(string taskSetID) {
+    internal SwarmPreparedTestScenario SetExecutorTaskSet(string taskSetID) {
         Type result = AppDomain.CurrentDomain.GetAssemblies()
 	        .SelectMany(a => a.GetTypes()
                 .Where(t => t.IsDefined(typeof(SwarmTaskSet))))
@@ -36,7 +32,10 @@ public class TestScenario {
             .FirstOrDefault();
 
         if (result is not null)
-            this.TaskExecutor.TaskSet = result;
+            if (TaskExecutor is not null)
+                TaskExecutor.TaskSet = result;
+            else
+                throw new Exception("Task executor is not initialized");
         else
             throw new Exception($"Couldn't find a task set type with TaskSetID of {taskSetID}");
 
@@ -44,10 +43,15 @@ public class TestScenario {
     }
 
     public void RunScenario() {
-        if (scenarioRunner is null) {
-            throw new Exception("Executor sequence was not specified. Aborting");
-        }
+        if (scenarioRunner is null)
+            throw new Exception("Executor sequence was not set. Aborting");
+        if (TaskExecutor is null)
+            throw new Exception("Task executor was not set. Aborting");
+        if (ResultsListener is null)
+            throw new Exception("Results listener was not set. Aborting");
+            
         TaskExecutor.IsGreen = true;
+        ResultsListener.Start();
         scenarioRunner.Start();
     }
 }

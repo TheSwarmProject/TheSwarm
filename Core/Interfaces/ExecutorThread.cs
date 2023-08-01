@@ -10,11 +10,18 @@ public class ExecutorThread {
     /// </summary>
     internal TaskSet TaskSet {get; init;}
     public bool IsRunning {get; set;}
+    public bool IsAlive => thread.IsAlive;
 
     public ExecutorThread(TaskExecutor executor) {
         this.TaskSet = new TaskSet(executor);
         this.thread = new Thread(() => { executor.TaskLoop(this); });
     }
 
-    public void Start() => thread.Start();
+    public void Start() {
+        IsRunning = true;
+        thread.Start();
+    }
+
+    public void Finish() => IsRunning = false;
+    public void Terminate() => thread.Interrupt();
 }
