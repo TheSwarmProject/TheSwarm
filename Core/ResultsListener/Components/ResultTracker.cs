@@ -29,7 +29,6 @@ public class ResultTracker {
     internal long                       totalContentLength          {get; set;} = 0;
     
     
-    internal DateTime                   startPoint                  {get; set;}
     internal DateTime                   lastUpdateTick              {get; set;}
 
     public   Results                    results                     {get; set;}
@@ -38,7 +37,6 @@ public class ResultTracker {
         this.name = name;
         this.method = method;
 
-        startPoint = DateTime.Now;
         lastUpdateTick = DateTime.Now;
 
         results = new Results(name, method);
@@ -94,7 +92,6 @@ public class ResultTracker {
 
     private void CalculateAverages() {
         // TODO: This section is pretty-much copy-pasted from Howitzer framework. It needs to be re-worked for better readability
-        lastUpdateTick = DateTime.Now;
         reqCount = requestsCount;
         try {
             averageResponseTime = totalResponseTime / requestsCount;
@@ -108,9 +105,10 @@ public class ResultTracker {
         }
         try {
             // TODO: Decompose this calculation. The level of inception here is off the charts =\
-            averageRequestsPerSecond = (requestsCount / Math.Round((double)((((DateTimeOffset)lastUpdateTick).ToUnixTimeMilliseconds() - ((DateTimeOffset)startPoint).ToUnixTimeMilliseconds()) / 1000), 2));
+            averageRequestsPerSecond = (requestsCount / Math.Round((double)((((DateTimeOffset)DateTime.Now).ToUnixTimeMilliseconds() - ((DateTimeOffset)lastUpdateTick).ToUnixTimeMilliseconds()) / 1000), 2));
+            // Usually happens on first tick. Just put requests count in there, since tick is already 1 second
             if (Double.IsInfinity(averageRequestsPerSecond))
-                averageRequestsPerSecond = 0;
+                averageRequestsPerSecond = requestsCount;
         } catch (DivideByZeroException) {
             averageRequestsPerSecond = 0;
         }
@@ -137,7 +135,6 @@ public class ResultTracker {
 
         foreach (string key in failuresOccurrences.Keys) {failuresOccurrences[key] = 0;}
 
-        startPoint = DateTime.Now;;
         lastUpdateTick = DateTime.Now;;
     }
 }
