@@ -18,7 +18,7 @@ public class SwarmTaskSet : System.Attribute {
 /// With that in mind, we create a base type for containing said method and handling it's initialization. The rest is type-unique.
 /// </summary>
 public class MethodContainer : System.Attribute {
-    public int DelayAfterTaskMs {get; set;} = 0;
+    public int DelayAfterExecution {get; set;} = 0;
     public Action? Method {get; private set;}
 
     public void SetMethod(Action method) => this.Method = method;
@@ -26,8 +26,8 @@ public class MethodContainer : System.Attribute {
         if (Method is not null) {
             Method();
 
-            if (DelayAfterTaskMs > 0)
-                Thread.Sleep(DelayAfterTaskMs);
+            if (DelayAfterExecution > 0)
+                Thread.Sleep(DelayAfterExecution);
         }
     }
 }
