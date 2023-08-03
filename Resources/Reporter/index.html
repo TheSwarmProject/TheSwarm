@@ -1,0 +1,80 @@
+<html>
+
+<head>
+    <link rel="stylesheet" href="res/styles.css">
+    <script src="res/data.js"></script>
+    <script src="res/index.js"></script>
+    <script src="res/cdn.jsdelivr.net_npm_chart.js"></script>
+    <script src="res/cdn.jsdelivr.net_npm_chartjs-adapter-date-fns_dist_chartjs-adapter-date-fns.bundle.min.js"></script>
+    <script src="res/hammerjs.github.io_dist_hammer.min.js"></script>
+    <script src="res/chartjs-plugin-zoom.min.js"></script>
+</head>
+<body>
+
+<div id="top">
+    <h2>The swarm reporter</h1>
+</div>
+
+<div id="command_bar"></div>
+
+<h2>Average Response Times</h1>
+<div class="analysis_section">
+    <div class="section_sub_container shaded_container" id="all_average_response_times_chart_container" style="display: flex; flex-direction: column; align-items:baseline;">
+        <div class="total_flow_container_header" style="display: flex; width: 100%;">
+            <h2 style="margin-left: 45%">Total flow chart</h2>
+            <button style="margin-left: auto;" onclick="reset_zoom(total_averages_chart)">Reset zoom</button>
+        </div>
+        <div class="shaded_container" style="align-self:stretch; height: 100%;">
+            <canvas id="all_average_response_times_chart"></canvas>
+        </div>
+    </div>
+    <div class="section_sub_container shaded_container">
+        <h2 style="margin-left: 45%">Requests analysis</h2>
+    </div>
+    <div class="section_sub_container shaded_container" style="padding: 3px; display: flex; justify-content: space-evenly;">
+        <div class="shaded_container" style="width: 45%; height: 94%;"></div>
+        <div class="shaded_container" style="width: 45%; height: 94%;"></div>
+    </div>
+</div>
+
+<h2>Requests per second</h1>
+    <div class="analysis_section">
+        <div class="section_sub_container shaded_container" style="display: flex; flex-direction: column; align-items:baseline;">
+            <div class="total_flow_container_header" style="display: flex; width: 100%;">
+                <h2 style="margin-left: 45%">Total flow chart</h2>
+                <button style="margin-left: auto;" onclick="reset_zoom(total_rps_chart)">Reset zoom</button>
+            </div>
+            <div class="shaded_container" style="align-self:stretch; height: 100%;">
+                <canvas id="all_requests_per_second_chart"></canvas>
+            </div>
+        </div>
+        <div class="section_sub_container shaded_container" style="padding: 3px; display: flex; justify-content: space-evenly;">
+            <div class="shaded_container" style="width: 45%; height: 94%;"></div>
+            <div class="shaded_container" style="width: 45%; height: 94%;"></div>
+        </div>
+    </div>
+
+<h2>Failures</h2>
+<div class="analysis_section">
+    <div class="section_sub_container shaded_container" style="display: flex; flex-direction: column; align-items:baseline;">
+        <div class="total_flow_container_header" style="display: flex; width: 100%;">
+            <h2 style="margin-left: 45%">Total flow chart</h2>
+            <button style="margin-left: auto;" onclick="reset_zoom(total_failures_chart)">Reset zoom</button>
+        </div>
+        <div class="shaded_container" style="align-self:stretch; height: 100%;">
+            <canvas id="all_failures_chart"></canvas>
+        </div>
+    </div>
+    <div class="section_sub_container shaded_container" style="padding: 3px; display: flex; justify-content: space-evenly;">
+        
+    </div>
+</div>
+
+<div id="footer">Powered by Swarm client</div>
+
+</body>
+
+<script>
+    window.onload = function() {draw_all_graphs()}
+</script>
+</html>

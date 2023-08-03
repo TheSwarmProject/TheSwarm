@@ -70,7 +70,10 @@ public class ResultsListener {
             foreach (KeyValuePair<string, ResultTracker> tracker in resultTrackers)
                 results.Add(new {
                     Name = tracker.Key,
-                    Data = tracker.Value.results.resultsDict
+                    Data = new {
+                        Headers = Results.DataHeaders,
+                        Values = tracker.Value.results.ResultsList
+                    }
                 });
             
             File.WriteAllText(
@@ -100,7 +103,8 @@ public class ResultsListener {
         DateTime timestamp = DateTime.Now;
         timestamps.Add(timestamp);
 
-        foreach(string key in resultTrackers.Keys) {
+        // Working off the copy of dict keys - in case additional entries are added during execution
+        foreach(string key in resultTrackers.Keys.ToArray()) {
             ResultTracker tracker = resultTrackers[key];
             lock (tracker) {
                 tracker.GenerateResultEntry(timestamp, resetData);
@@ -112,7 +116,7 @@ public class ResultsListener {
         // TODO: Add logger to the class and replace WriteLine calls with it.
         Console.WriteLine("------------------------------------------------------------------------------------------");
         String timestamp = DateTime.Now.ToString(Constants.GRAPH_DATETIME_FORMAT);
-        foreach (string request in resultTrackers.Keys) {
+        foreach (string request in resultTrackers.Keys.ToArray()) {
             ResultTracker tracker = resultTrackers[request];
 
             Console.WriteLine($"({tracker.method}){tracker.name} - {tracker.reqCount} requests - {tracker.averageResponseTime}ms avg - {tracker.averageRequestsPerSecond} rps avg - {tracker.averageContentLength} bytes avg - {tracker.failRate}% failed");
