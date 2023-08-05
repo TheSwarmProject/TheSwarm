@@ -4,6 +4,7 @@
     <link rel="stylesheet" href="res/styles.css">
     <script src="res/data.js"></script>
     <script src="res/index.js"></script>
+    <script src="res/sorttable.js"></script>
     <script src="res/cdn.jsdelivr.net_npm_chart.js"></script>
     <script src="res/cdn.jsdelivr.net_npm_chartjs-adapter-date-fns_dist_chartjs-adapter-date-fns.bundle.min.js"></script>
     <script src="res/cdnjs.cloudflare.com_ajax_libs_chartjs-plugin-annotation_3.0.1_chartjs-plugin-annotation.min.js"></script>
@@ -83,8 +84,55 @@
         </div>
     </div>
     <div class="section_sub_container shaded_container" style="padding: 3px; display: flex; justify-content: space-evenly;">
-        <div class="shaded_container" style="width: 45%; height: 94%;"></div>
-        <div class="shaded_container" style="width: 45%; height: 94%;"></div>
+        <div class="shaded_container" style="width: 45%; height: 94%; display: flex; flex-direction: column;">
+            <h3>Responses distribution</h3>
+            <div id="responses_table_container" class="shaded_container" style="overflow: auto; width: 98%; height: 95%;">
+                <table id="responses_table">
+                    <tr>
+                        <th>Call</th>
+                        <th class="sorttable_numeric">Fast responses</th>
+                        <th class="sorttable_numeric">Normal responses</th>
+                        <th class="sorttable_numeric">Slow responses</th>
+                        <th class="sorttable_numeric">Unacceptable responses</th>
+                    </tr>
+                </table>
+            </div>
+        </div>
+        <div class="shaded_container" style="width: 45%; height: 94%; display: flex; flex-direction: column;">
+            <h3>Summary</h3>
+            <div id="responses_summary_container" class="shaded_container" style="overflow: auto; width: 98%; height: 95%;">
+                <table id="response_summary_table">
+                    <tr>
+                        <th>Stat name</th>
+                        <th>Value</th>
+                    </tr>
+                    <tr>
+                        <td style="background: #f14f41; color: black; text-shadow:none">Immediate optimization required</td>
+                        <td id="immediate_response_optimization_value" style="background: #f14f41; color: black; text-shadow:none"></td>
+                    </tr>
+                    <tr>
+                        <td style="background: #d6d642; color: black">Optimization required</td>
+                        <td id="response_optimization_value" style="background: #d6d642; color: black"></td>
+                    </tr>
+                    <tr>
+                        <td>Fastest call</td>
+                        <td id="fastest_call_value"></td>
+                    </tr>
+                    <tr>
+                        <td>Slowest call</td>
+                        <td id="slowest_call_value"></td>
+                    </tr>
+                    <tr>
+                        <td>Fastest call group</td>
+                        <td id="fastest_call_group_value"></b></td>
+                    </tr>
+                    <tr>
+                        <td>Slowest call group</td>
+                        <td id="slowest_call_group_value"></b></td>
+                    </tr>
+                </table>
+            </div>
+        </div>
     </div>
 </div>
 

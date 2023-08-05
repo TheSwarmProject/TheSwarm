@@ -184,6 +184,9 @@ function apply_new_thresholds() {
     fast_requests_threshold = new_fast_threshold;
 
     create_response_analysis_buttons();
+    recreate_response_distribution_table();
+    populate_response_distribution_table();
+    populate_responses_summary_table();
 }
 
 function create_response_analysis_buttons() {
@@ -357,6 +360,164 @@ function updateAverageResponseTime(request_name) {
     document.getElementById("average_response_timve_val").innerHTML = 'Avg. {0} ms'.f(response_times_list.find(val => val.Name == request_name).AverageResponseTime);
 }
 
+/**
+ * We re-create sortables due to funky behavior when it gets initialized twice (reverse sorting stops working)
+ */
+function recreate_response_distribution_table() {
+    document.querySelector("#responses_table").remove();
+
+    let headers = [
+        {Text: "Call"},
+        {
+            Text: "Fast responses",
+            Class: "sorttable_numeric"
+        },
+        {
+            Text: "Normal responses",
+            Class: "sorttable_numeric"
+        },
+        {
+            Text: "Slow responses",
+            Class: "sorttable_numeric"
+        },
+        {
+            Text: "Unacceptable responses",
+            Class: "sorttable_numeric"
+        },
+    ];
+
+    createTable("responses_table", document.getElementById("responses_table_container"), headers);
+}
+
+function populate_response_distribution_table() {
+    let table_body = document.querySelector("#responses_table tbody");
+
+    response_times_list.forEach(entry => {
+        let row = document.createElement("tr");
+        let name = document.createElement("td");
+        let fast_response = document.createElement("td");
+        let normal_response = document.createElement("td");
+        let slow_response = document.createElement("td");
+        let unacceptable_response = document.createElement("td");
+
+        name.innerHTML = entry.Name;
+        fast_response.innerHTML = entry.FastResponses;
+        normal_response.innerHTML = entry.NormalResponses;
+        slow_response.innerHTML = entry.SlowResponses;
+        unacceptable_response.innerHTML = entry.UnacceptableResponses;
+
+        row.appendChild(name);
+        row.appendChild(fast_response);
+        row.appendChild(normal_response);
+        row.appendChild(slow_response);
+        row.appendChild(unacceptable_response);
+        table_body.appendChild(row);
+    })
+
+    sorttable.makeSortable(document.querySelector("#responses_table"));
+}
+
+function populate_responses_summary_table() {
+    // First, we define the container variables
+    var unacceptable_responses = [];
+    var slow_responses = [];
+    var fastest_response = null;
+    var slowest_response = null;
+    var fastest_response_group = null;
+    var slowest_response_group = null;
+
+    let tst = {
+        Name: "",
+        ResponseTimes: [],
+        AverageResponseTime: 0,
+        FastResponses: 0,
+        NormalResponses: 0,
+        SlowResponses: 0,
+        UnacceptableResponses: 0
+    }
+    // Then we populate the data
+    response_times_list.forEach(call => {
+        if (call.UnacceptableResponses > 0) {
+            unacceptable_responses.push(call);
+        }
+        if (call.SlowResponses > 0) {
+            slow_responses.push(call);
+        }
+        if (fastest_response == null) {
+            fastest_response = call;
+        } else {
+            if (call.ResponseTimes.min() < fastest_response.ResponseTimes.min()) {
+                fastest_response = call;
+            }
+        }
+        if (slowest_response == null) {
+            slowest_response = call;
+        } else {
+            if (call.ResponseTimes.max() > slowest_response.ResponseTimes.max()) {
+                slowest_response = call;
+            }
+        }
+        if (fastest_response_group == null) {
+            fastest_response_group = call;
+        } else {
+            if (call.AverageResponseTime < fastest_response_group.AverageResponseTime) {
+                fastest_response_group = call;
+            }
+        }
+        if (slowest_response_group == null) {
+            slowest_response_group = call;
+        } else {
+            if (call.AverageResponseTime > slowest_response_group.AverageResponseTime) {
+                slowest_response_group = call;
+            }
+        }
+    })
+
+    // Finally, we extract and set the values
+    // Immediate optimization
+    var unacceptable_response_values = "";
+    if (unacceptable_responses.length > 0) {
+        for (var index = 0; index < unacceptable_responses.length; index++) {
+            var call_data = unacceptable_responses[index];
+            unacceptable_response_values += "{0} - <b>{1} unacceptable call(s) out of {2}</b><br>".
+                                         format(call_data.Name, call_data.UnacceptableResponses,
+                                         call_data.ResponseTimes.length)
+        }
+    } else {
+        unacceptable_response_values = "None";
+    }
+    document.getElementById("immediate_response_optimization_value").innerHTML = unacceptable_response_values;
+
+    // Optimization
+    var slow_response_values = "";
+    if (slow_responses.length > 0) {
+        for (var index = 0; index < slow_responses.length; index++) {
+            var call_data = slow_responses[index];
+            slow_response_values += "{0} - <b>{1} slow call(s) out of {2}</b><br>".
+            format(call_data.Name, call_data.SlowResponses, call_data.ResponseTimes.length)
+        }
+    } else {
+        slow_response_values = "None";
+    }
+    document.getElementById("response_optimization_value").innerHTML = slow_response_values;
+
+    // Fastest call
+    document.getElementById("fastest_call_value").innerHTML = "{0} - <b>{1} ms</b>\n".format(fastest_response.Name,
+        fastest_response.ResponseTimes.minNotZero());
+
+    // Slowest call
+    document.getElementById("slowest_call_value").innerHTML = "{0} - <b>{1} ms</b>\n".format(slowest_response.Name,
+        slowest_response.ResponseTimes.max());
+
+    // Fastest call group
+    document.getElementById("fastest_call_group_value").innerHTML = "{0} - <b>{1} ms average ({2} calls)</b>\n".format(fastest_response_group.Name,
+        fastest_response_group.AverageResponseTime, fastest_response_group.ResponseTimes.length);
+
+    // Slowest call group
+    document.getElementById("slowest_call_group_value").innerHTML = "{0} - <b>{1} ms average ({2} calls)</b>\n".format(slowest_response_group.Name,
+        slowest_response_group.AverageResponseTime, slowest_response_group.ResponseTimes.length);
+}
+
 /*
 ############################## Service functions ##############################
 */
@@ -368,7 +529,9 @@ function reset_zoom(chart) {
 function load_data() {
     draw_all_average_response_times();
     display_thresholds();
-    create_response_analysis_buttons()
+    create_response_analysis_buttons();
+    populate_response_distribution_table();
+    populate_responses_summary_table();
 
     draw_all_rps();
     draw_all_failures();
@@ -403,3 +566,58 @@ String.prototype.format = String.prototype.f = function(){
         return args[n] ? args[n] : m;
     });
 };
+
+/**
+ * Convenience add-on for array - allows to get the biggest value in the array
+ * @returns - Biggest int value in the array
+ */
+Array.prototype.max = function() {
+    return Math.max.apply(null, this);
+};
+
+/**
+ * Convenience add-on for array - allows to get the smallest value in the array
+ * @returns - Smallest int value in the array
+ */
+Array.prototype.min = function() {
+    return Math.min.apply(null, this);
+};
+
+/**
+ * Convenience add-on for array - allows to get the smallest non-zero value in the array
+ * @returns - Smallest non-zero int value in the array
+ */
+Array.prototype.minNotZero = function() {
+    return Math.min.apply(null, this.filter(Boolean));
+};
+
+/**
+ * Utility function to create a new table at runtime
+ * @param {string} id - ID of the table element 
+ * @param {object} container - Element to put the table into (container)
+ * @param {list of objects} headers - Table headers (rows of thead block) with desired attributes
+ */
+function createTable(id, container, headers) {
+    let table = document.createElement("table");
+    table.id = id;
+    let head = document.createElement("thead");
+    let body = document.createElement("tbody");
+    let foot = document.createElement("tfoot");
+
+    let header_row = document.createElement("tr");
+    headers.forEach(header => {
+        let entry = document.createElement("th");
+        entry.innerHTML = header.Text;
+        if(header.hasOwnProperty("Class")) {
+            entry.classList.add(header.Class)
+        }
+        header_row.appendChild(entry);
+    })
+    head.appendChild(header_row);
+
+    table.appendChild(head);
+    table.appendChild(body);
+    table.appendChild(foot);
+
+    container.appendChild(table);
+}
