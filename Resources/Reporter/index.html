@@ -8,6 +8,7 @@
     <script src="res/cdn.jsdelivr.net_npm_chart.js"></script>
     <script src="res/cdn.jsdelivr.net_npm_chartjs-adapter-date-fns_dist_chartjs-adapter-date-fns.bundle.min.js"></script>
     <script src="res/cdnjs.cloudflare.com_ajax_libs_chartjs-plugin-annotation_3.0.1_chartjs-plugin-annotation.min.js"></script>
+    <script src="res/cdn.jsdelivr.net_npm_chartjs-plugin-datalabels@2.2.0_dist_chartjs-plugin-datalabels.min.js"></script>
     <script src="res/hammerjs.github.io_dist_hammer.min.js"></script>
     <script src="res/chartjs-plugin-zoom.min.js"></script>
 </head>
@@ -147,9 +148,51 @@
                 <canvas id="all_requests_per_second_chart"></canvas>
             </div>
         </div>
-        <div class="section_sub_container shaded_container" style="padding: 3px; display: flex; justify-content: space-evenly;">
-            <div class="shaded_container" style="width: 45%; height: 94%;"></div>
-            <div class="shaded_container" style="width: 45%; height: 94%;"></div>
+        <div class="section_sub_container shaded_container" style="padding: 3px; display: flex; justify-content: space-evenly; align-items: center;">
+            <div class="shaded_container" style="width: 30%; height: 94%; display: flex; flex-direction: column; align-items: center;">
+                <h3>Requests percentage</h3>
+                <div class="shaded_container" style="display: flex; height: 85%; width: 90%; align-items: center; justify-content: center;">
+                    <canvas id="rps_percentage_doughnut"></canvas>
+                </div>
+            </div>
+            <div class="shaded_container" style="width: 30%; height: 94%; display: flex; flex-direction: column; align-items: center;">
+                <h3>Requests amounts</h3>
+                <div id="responses_table_container" class="shaded_container" style="overflow: auto; width: 98%; height: 95%;">
+                    <table id="requests_table" class="sortable">
+                        <tr>
+                            <th>Call</th>
+                            <th class="sorttable_numeric">Total requests amount</th>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+            <div class="shaded_container" style="width: 30%; height: 94%; display: flex; flex-direction: column; align-items: center;">
+                <h3>Summary</h3>
+                <div id="rps_summary_container" class="shaded_container" style="overflow: auto; width: 98%; height: 95%;">
+                    <table id="requests_summary_table">
+                        <tr>
+                            <th>Stat name</th>
+                            <th>Value</th>
+                        </tr>
+                        <tr>
+                            <td>Most frequent call</td>
+                            <td id="most_frequent_call_value"></td>
+                        </tr>
+                        <tr>
+                            <td>Least frequent call</td>
+                            <td id="least_frequent_call_value"></td>
+                        </tr>
+                        <tr>
+                            <td>Highest RPS</td>
+                            <td id="highest_rps_value"></td>
+                        </tr>
+                        <tr>
+                            <td>Lowest RPS</td>
+                            <td id="lowest_rps_value"></td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
         </div>
     </div>
 

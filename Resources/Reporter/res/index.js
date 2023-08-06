@@ -3,8 +3,9 @@
 */
 
 var total_averages_chart = null;
-// We store the dataset for use in response times analysis section - just so we don't iterate the same data twice
+// We store the datasets for use in alasysis sections
 var averages_datasets = [];
+var rps_datasets = [];
 var total_rps_chart = null;
 var total_failures_chart = null;
 
@@ -34,7 +35,6 @@ function draw_all_average_response_times() {
 function draw_all_rps() {
     var ctx = document.getElementById("all_requests_per_second_chart");
 
-    let datasets = [];
     results_data.Results.forEach(entry => {
         let resultSet = new SwarmResultSet(entry.Data)
         let dataset = {
@@ -49,10 +49,10 @@ function draw_all_rps() {
             })
         }
 
-        datasets.push(dataset)
+        rps_datasets.push(dataset)
     })
 
-    total_rps_chart = draw_line_chart(ctx, datasets, "Requests per second")
+    total_rps_chart = draw_line_chart(ctx, rps_datasets, "Requests per second")
 }
 
 function draw_all_failures() {
@@ -129,17 +129,17 @@ function draw_line_chart(canvas, datasets, valueName, annotations = {}) {
                             drawTime: "afterDraw",
                             backgroundColor: "rgba(0,0,0,0.3)"
                         },
-            
+
                         mode: 'xy',
                     }
                 },
                 annotation: annotations
-            }   
+            }
         },
         data: {
-          datasets: datasets
+            datasets: datasets
         }
-      });
+    });
 }
 
 /*
@@ -168,7 +168,7 @@ function apply_new_thresholds() {
     let new_fast_threshold = parseInt(document.getElementById("analysis_fast_threshold").value),
         new_normal_threshold = parseInt(document.getElementById("analysis_normal_threshold").value),
         new_slow_threshold = parseInt(document.getElementById("analysis_slow_threshold").value);
-    
+
     if (new_slow_threshold > new_normal_threshold && new_slow_threshold > new_fast_threshold) {
         slow_requests_threshold = new_slow_threshold;
     } else {
@@ -213,7 +213,7 @@ function create_response_analysis_buttons() {
         entry.data.forEach(dataset => {
             call_data.ResponseTimes.push(dataset.y);
 
-            if(dataset.y >= slow_requests_threshold) {
+            if (dataset.y >= slow_requests_threshold) {
                 call_data.UnacceptableResponses += 1;
             } else if (dataset.y >= normal_requests_threshold && dataset.y < slow_requests_threshold) {
                 call_data.SlowResponses += 1;
@@ -224,7 +224,9 @@ function create_response_analysis_buttons() {
             }
         });
 
-        call_data.AverageResponseTime = ((call_data.ResponseTimes.reduce((a, b) => a + b, 0)) / call_data.ResponseTimes.length).toFixed(2);
+        // Since there might be zeroes - we eleminate them from calculation by filtering them out
+        let real_values = call_data.ResponseTimes.filter(Number);
+        call_data.AverageResponseTime = ((real_values.reduce((a, b) => a + b, 0)) / real_values.length).toFixed(2);
 
         response_times_list.push(call_data);
 
@@ -239,14 +241,15 @@ function create_response_analysis_buttons() {
         } else {
             button.setAttribute("class", "fast_call_group");
         }
-        button.onclick = function() {
+        button.onclick = function () {
             draw_response_analysis_chart(call_data.Name);
             draw_response_analysis_doughnut(call_data.Name)
-            updateAverageResponseTime(call_data.Name)};
+            updateAverageResponseTime(call_data.Name)
+        };
         button.innerHTML = call_data.Name;
         list_container.appendChild(button);
         list.appendChild(list_container);
-        });
+    });
 
     // We auto-initialize all the sections, using first item from the list
     list.firstChild.firstChild.click();
@@ -271,8 +274,8 @@ function draw_response_analysis_chart(request_name) {
                 yMax: fast_requests_threshold,
                 borderColor: 'rgb(0, 153, 0)',
                 borderWidth: 2,
-              },
-              line2: {
+            },
+            line2: {
                 type: 'line',
                 label: {
                     display: true,
@@ -284,8 +287,8 @@ function draw_response_analysis_chart(request_name) {
                 yMax: normal_requests_threshold,
                 borderColor: 'rgb(255, 255, 0)',
                 borderWidth: 2,
-              },
-              line3: {
+            },
+            line3: {
                 type: 'line',
                 label: {
                     display: true,
@@ -296,12 +299,12 @@ function draw_response_analysis_chart(request_name) {
                 yMax: slow_requests_threshold,
                 borderColor: 'rgb(255, 153, 51)',
                 borderWidth: 2,
-              }
+            }
         }
     }
 
     responses_analysis_chart = draw_line_chart(
-        document.getElementById("responses_history_analysis"), 
+        document.getElementById("responses_history_analysis"),
         [averages_datasets.find(element => element.label == request_name)],
         "Response time, ms",
         annotations);
@@ -311,7 +314,7 @@ function draw_response_analysis_doughnut(request_name) {
     let entry = response_times_list.find(val => val.Name == request_name);
     let data = {
         labels: [
-            'Fast response (0-{0} ms)'.f(fast_requests_threshold), 
+            'Fast response (0-{0} ms)'.f(fast_requests_threshold),
             'Normal response ({0}-{1} ms)'.f(fast_requests_threshold, normal_requests_threshold),
             'Slow response ({0}-{1} ms)'.f(normal_requests_threshold, slow_requests_threshold),
             'Unacceptable response ({0}+ ms)'.f(slow_requests_threshold)
@@ -329,7 +332,7 @@ function draw_response_analysis_doughnut(request_name) {
                     'rgb(255, 255, 0)',
                     'rgb(255, 153, 51)',
                     'rgb(255, 51, 51)'
-                  ]
+                ]
             }
         ]
     }
@@ -342,18 +345,50 @@ function draw_response_analysis_doughnut(request_name) {
 
 function draw_doughnut_chart(canvas, data) {
     return new Chart(canvas, {
+        plugins: [ChartDataLabels],
         type: 'doughnut',
         data: data,
         options: {
-            plugins: {
-              datalabels: {
-                formatter: (value) => {
-                  return value + '%';
-                },
-              },
+            layout: {
+                padding: {
+                    bottom: 25
+                }
             },
-          }
-      });
+            plugins: {
+                legend: {
+                    position: 'top',
+                    display: false,
+                },
+                tooltip: {
+                    enabled: true,
+                    callbacks: {
+                        footer: (ttItem) => {
+                            let sum = 0;
+                            let dataArr = ttItem[0].dataset.data;
+                            dataArr.map(data => {
+                                sum += Number(data);
+                            });
+
+                            let percentage = (ttItem[0].parsed * 100 / sum).toFixed(2) + '%';
+                            return `${percentage}`;
+                        }
+                    }
+                },
+                datalabels: {
+                    formatter: (value, ctx) => {
+                        let sum = 0;
+                        let dataArr = ctx.chart.data.datasets[0].data;
+                        dataArr.map(data => {
+                            sum += data;
+                        });
+                        let percentage = (value * 100 / sum).toFixed(2) + "%";
+                        return percentage;
+                    },
+                    color: '#fff',
+                }
+            }
+        },
+    });
 }
 
 function updateAverageResponseTime(request_name) {
@@ -367,7 +402,7 @@ function recreate_response_distribution_table() {
     document.querySelector("#responses_table").remove();
 
     let headers = [
-        {Text: "Call"},
+        { Text: "Call" },
         {
             Text: "Fast responses",
             Class: "sorttable_numeric"
@@ -426,15 +461,6 @@ function populate_responses_summary_table() {
     var fastest_response_group = null;
     var slowest_response_group = null;
 
-    let tst = {
-        Name: "",
-        ResponseTimes: [],
-        AverageResponseTime: 0,
-        FastResponses: 0,
-        NormalResponses: 0,
-        SlowResponses: 0,
-        UnacceptableResponses: 0
-    }
     // Then we populate the data
     response_times_list.forEach(call => {
         if (call.UnacceptableResponses > 0) {
@@ -480,8 +506,8 @@ function populate_responses_summary_table() {
         for (var index = 0; index < unacceptable_responses.length; index++) {
             var call_data = unacceptable_responses[index];
             unacceptable_response_values += "{0} - <b>{1} unacceptable call(s) out of {2}</b><br>".
-                                         format(call_data.Name, call_data.UnacceptableResponses,
-                                         call_data.ResponseTimes.length)
+                format(call_data.Name, call_data.UnacceptableResponses,
+                    call_data.ResponseTimes.length)
         }
     } else {
         unacceptable_response_values = "None";
@@ -494,7 +520,7 @@ function populate_responses_summary_table() {
         for (var index = 0; index < slow_responses.length; index++) {
             var call_data = slow_responses[index];
             slow_response_values += "{0} - <b>{1} slow call(s) out of {2}</b><br>".
-            format(call_data.Name, call_data.SlowResponses, call_data.ResponseTimes.length)
+                format(call_data.Name, call_data.SlowResponses, call_data.ResponseTimes.length)
         }
     } else {
         slow_response_values = "None";
@@ -519,6 +545,116 @@ function populate_responses_summary_table() {
 }
 
 /*
+############################## Requests per second analysis ##############################
+*/
+
+var rps_percentage_doughnut_chart = null;
+var rps_data = [];
+
+function draw_rps_percentage_doughnut() {
+    rps_datasets.forEach(entry => {
+        let call_rps_data = {
+            Name: entry.label,
+            RPSEntries: [],
+            AverageRPS: 0,
+            PeakRPS: 0,
+            TotalRequests: 0
+        }
+
+        entry.data.forEach(dataset => {
+            call_rps_data.RPSEntries.push(dataset.y);
+        })
+
+        // Since there might be zeroes - we eleminate them from calculation by filtering them out
+        real_average_rps = call_rps_data.RPSEntries.filter(Number);
+        call_rps_data.AverageRPS = ((real_average_rps.reduce((a, b) => a + b, 0)) / real_average_rps.length).toFixed(2);
+        call_rps_data.PeakRPS = call_rps_data.RPSEntries.max();
+        call_rps_data.TotalRequests = call_rps_data.RPSEntries.reduce((a, b) => a + b, 0);
+
+        rps_data.push(call_rps_data);
+    })
+
+    let doughnutLabels = [];
+    let doughnutData = [];
+
+    rps_data.forEach(entry => {
+        doughnutLabels.push(entry.Name);
+        doughnutData.push(entry.TotalRequests)
+    })
+
+    let data = {
+        datasets: [
+            {
+                data: doughnutData
+            }
+        ],
+        labels: doughnutLabels
+    }
+
+    rps_percentage_doughnut_chart = draw_doughnut_chart(document.getElementById("rps_percentage_doughnut"), data, "");
+}
+
+function populate_request_amounts_table() {
+    let table_body = document.querySelector("#requests_table tbody");
+
+    rps_data.forEach(entry => {
+        let row = document.createElement("tr");
+        let name = document.createElement("td");
+        let requests_total = document.createElement("td");
+
+        name.innerHTML = entry.Name;
+        requests_total.innerHTML = entry.TotalRequests
+
+        row.appendChild(name);
+        row.appendChild(requests_total);
+        table_body.appendChild(row);
+    })
+}
+
+function populate_rps_summary_table() {
+    var most_frequent_call = null;
+    var least_frequent_call = null;
+    var highest_rps = null;
+    var lowest_rps = null;
+
+    rps_data.forEach(entry => {
+        if (most_frequent_call == null) {
+            most_frequent_call = entry;
+        } else {
+            if (entry.TotalRequests > most_frequent_call.TotalRequests) {
+                most_frequent_call = entry;
+            }
+        }
+        if (least_frequent_call == null) {
+            least_frequent_call = entry;
+        } else {
+            if (entry.TotalRequests < least_frequent_call.TotalRequests) {
+                least_frequent_call = entry;
+            }
+        }
+        if (highest_rps == null) {
+            highest_rps = entry;
+        } else {
+            if (entry.PeakRPS > highest_rps.PeakRPS) {
+                highest_rps = entry;
+            }
+        }
+        if (lowest_rps == null) {
+            lowest_rps = entry;
+        } else {
+            if (entry.PeakRPS < lowest_rps.PeakRPS) {
+                lowest_rps = entry;
+            }
+        }
+    });
+
+    document.getElementById("most_frequent_call_value").innerHTML = "{0} - <b>{1} times</b>".format(most_frequent_call.Name, most_frequent_call.TotalRequests);
+    document.getElementById("least_frequent_call_value").innerHTML = "{0} - <b>{1} times</b>".format(least_frequent_call.Name, least_frequent_call.TotalRequests);
+    document.getElementById("highest_rps_value").innerHTML = "{0} - <b>{1} Requests per second peak</b>".format(highest_rps.Name, highest_rps.PeakRPS);
+    document.getElementById("lowest_rps_value").innerHTML = "{0} - <b>{1} Requests per second peak</b>".format(lowest_rps.Name, lowest_rps.PeakRPS);
+}
+
+/*
 ############################## Service functions ##############################
 */
 
@@ -534,6 +670,10 @@ function load_data() {
     populate_responses_summary_table();
 
     draw_all_rps();
+    draw_rps_percentage_doughnut();
+    populate_request_amounts_table();
+    populate_rps_summary_table();
+
     draw_all_failures();
 }
 
@@ -552,7 +692,7 @@ function SwarmResultSet(data) {
      * @param {int} index - Index of container from which to extract specified value
      * @returns {object} - Value
      */
-    this.GetItem = function(valueName, index){
+    this.GetItem = function (valueName, index) {
         return this.Values[index][this.Headers[valueName]];
     }
 }
@@ -560,9 +700,9 @@ function SwarmResultSet(data) {
 /**
  * Simple string formatting add-on
  */
-String.prototype.format = String.prototype.f = function(){
+String.prototype.format = String.prototype.f = function () {
     var args = arguments;
-    return this.replace(/\{(\d+)\}/g, function(m,n){
+    return this.replace(/\{(\d+)\}/g, function (m, n) {
         return args[n] ? args[n] : m;
     });
 };
@@ -571,7 +711,7 @@ String.prototype.format = String.prototype.f = function(){
  * Convenience add-on for array - allows to get the biggest value in the array
  * @returns - Biggest int value in the array
  */
-Array.prototype.max = function() {
+Array.prototype.max = function () {
     return Math.max.apply(null, this);
 };
 
@@ -579,7 +719,7 @@ Array.prototype.max = function() {
  * Convenience add-on for array - allows to get the smallest value in the array
  * @returns - Smallest int value in the array
  */
-Array.prototype.min = function() {
+Array.prototype.min = function () {
     return Math.min.apply(null, this);
 };
 
@@ -587,7 +727,7 @@ Array.prototype.min = function() {
  * Convenience add-on for array - allows to get the smallest non-zero value in the array
  * @returns - Smallest non-zero int value in the array
  */
-Array.prototype.minNotZero = function() {
+Array.prototype.minNotZero = function () {
     return Math.min.apply(null, this.filter(Boolean));
 };
 
@@ -608,7 +748,7 @@ function createTable(id, container, headers) {
     headers.forEach(header => {
         let entry = document.createElement("th");
         entry.innerHTML = header.Text;
-        if(header.hasOwnProperty("Class")) {
+        if (header.hasOwnProperty("Class")) {
             entry.classList.add(header.Class)
         }
         header_row.appendChild(entry);
