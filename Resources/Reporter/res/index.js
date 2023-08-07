@@ -2,10 +2,12 @@
 ############################## Total flow charts ##############################
 */
 
-var total_averages_chart = null;
 // We store the datasets for use in alasysis sections
 var averages_datasets = [];
 var rps_datasets = [];
+var failure_datasets = [];
+
+var total_averages_chart = null;
 var total_rps_chart = null;
 var total_failures_chart = null;
 
@@ -58,7 +60,6 @@ function draw_all_rps() {
 function draw_all_failures() {
     var ctx = document.getElementById("all_failures_chart");
 
-    let datasets = [];
     results_data.Results.forEach(entry => {
         let resultSet = new SwarmResultSet(entry.Data)
         let dataset = {
@@ -73,10 +74,10 @@ function draw_all_failures() {
             })
         }
 
-        datasets.push(dataset)
+        failure_datasets.push(dataset)
     })
 
-    total_failures_chart = draw_line_chart(ctx, datasets, "Failures")
+    total_failures_chart = draw_line_chart(ctx, failure_datasets, "Failures")
 }
 
 function draw_line_chart(canvas, datasets, valueName, annotations = {}) {
@@ -404,19 +405,19 @@ function recreate_response_distribution_table() {
     let headers = [
         { Text: "Call" },
         {
-            Text: "Fast responses",
+            Text: "Fast response entries",
             Class: "sorttable_numeric"
         },
         {
-            Text: "Normal responses",
+            Text: "Normal response entries",
             Class: "sorttable_numeric"
         },
         {
-            Text: "Slow responses",
+            Text: "Slow response entries",
             Class: "sorttable_numeric"
         },
         {
-            Text: "Unacceptable responses",
+            Text: "Unacceptable response entries",
             Class: "sorttable_numeric"
         },
     ];
@@ -505,7 +506,7 @@ function populate_responses_summary_table() {
     if (unacceptable_responses.length > 0) {
         for (var index = 0; index < unacceptable_responses.length; index++) {
             var call_data = unacceptable_responses[index];
-            unacceptable_response_values += "{0} - <b>{1} unacceptable call(s) out of {2}</b><br>".
+            unacceptable_response_values += "{0} - <b>{1} unacceptable entries out of {2}</b><br>".
                 format(call_data.Name, call_data.UnacceptableResponses,
                     call_data.ResponseTimes.length)
         }
@@ -519,7 +520,7 @@ function populate_responses_summary_table() {
     if (slow_responses.length > 0) {
         for (var index = 0; index < slow_responses.length; index++) {
             var call_data = slow_responses[index];
-            slow_response_values += "{0} - <b>{1} slow call(s) out of {2}</b><br>".
+            slow_response_values += "{0} - <b>{1} slow entries out of {2}</b><br>".
                 format(call_data.Name, call_data.SlowResponses, call_data.ResponseTimes.length)
         }
     } else {
@@ -653,6 +654,15 @@ function populate_rps_summary_table() {
     document.getElementById("highest_rps_value").innerHTML = "{0} - <b>{1} Requests per second peak</b>".format(highest_rps.Name, highest_rps.PeakRPS);
     document.getElementById("lowest_rps_value").innerHTML = "{0} - <b>{1} Requests per second peak</b>".format(lowest_rps.Name, lowest_rps.PeakRPS);
 }
+
+/*
+############################## Failures analysis ##############################
+*/
+
+var failures_percentage_doughnut_chart = null;
+var failures_data = [];
+
+
 
 /*
 ############################## Service functions ##############################
