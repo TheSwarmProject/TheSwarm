@@ -28,9 +28,6 @@ public class ResultsListener {
                 Thread.Sleep(1000);
 
                 TickResults();
-                if (this.printData) {
-                    PrintStats();
-                }
             }
         });
         threadActive = false;
@@ -54,7 +51,8 @@ public class ResultsListener {
         ResultTracker tracker = resultTrackers[key];
         tracker.LogEntry(response.ResponseTimeMs, response.ContentLengthBytes);
         if (response.IsFailed) {
-            tracker.LogFailure(response.FailureMessage);
+            // Since responses might be a full-on HTML pages or long query responses, we trim it down to a first 100 symbols
+            tracker.LogFailure(response.FailureMessage.Substring(0, 100));
         }
     }
 
@@ -103,24 +101,21 @@ public class ResultsListener {
         DateTime timestamp = DateTime.Now;
         timestamps.Add(timestamp);
 
+        // TODO: Add logger to the class and replace WriteLine calls with it.
+        if (printData)
+            Console.WriteLine("------------------------------------------------------------------------------------------");
         // Working off the copy of dict keys - in case additional entries are added during execution
         foreach(string key in resultTrackers.Keys.ToArray()) {
             ResultTracker tracker = resultTrackers[key];
             lock (tracker) {
-                tracker.GenerateResultEntry(timestamp, resetData);
+                tracker.GenerateResultEntry(timestamp);
+                if (printData)
+                    Console.WriteLine($"({tracker.method}){tracker.name} - {tracker.reqCount} requests - {tracker.averageResponseTime}ms avg - {tracker.averageRequestsPerSecond} rps avg - {tracker.averageContentLength} bytes avg - {tracker.failRate}% failed");
+                if (resetData)
+                    tracker.Reset();
             }
         }
-    }
-
-    private void PrintStats() {
-        // TODO: Add logger to the class and replace WriteLine calls with it.
-        Console.WriteLine("------------------------------------------------------------------------------------------");
-        String timestamp = DateTime.Now.ToString(Constants.GRAPH_DATETIME_FORMAT);
-        foreach (string request in resultTrackers.Keys.ToArray()) {
-            ResultTracker tracker = resultTrackers[request];
-
-            Console.WriteLine($"({tracker.method}){tracker.name} - {tracker.reqCount} requests - {tracker.averageResponseTime}ms avg - {tracker.averageRequestsPerSecond} rps avg - {tracker.averageContentLength} bytes avg - {tracker.failRate}% failed");
-        }
-        Console.WriteLine("------------------------------------------------------------------------------------------\n\n");
+        if (printData)
+            Console.WriteLine("------------------------------------------------------------------------------------------\n\n");
     }
 }

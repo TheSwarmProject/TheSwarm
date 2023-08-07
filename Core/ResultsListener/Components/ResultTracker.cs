@@ -69,8 +69,10 @@ public class ResultTracker {
     /// <param name="failureMessage">Failure message</param>
     public void LogFailure(string failureMessage) {
         failuresCount += 1;
-        // Since this clause will both create not existing key AND update existing one, we don't need if loop here.
-        failuresOccurrences[failureMessage] += 1;
+        if(failuresOccurrences.ContainsKey(failureMessage))
+            failuresOccurrences[failureMessage] += 1;
+        else
+            failuresOccurrences[failureMessage] = 1;
     }
 
     /// <summary>
@@ -79,11 +81,9 @@ public class ResultTracker {
     /// Otherwise, quality of numbers is not guaranteed.
     /// </summary>
     /// <param name="timestamp">Timestamp to apply to result entry</param>
-    /// <param name="resetData">Flag - whether to reset tracker values or no</param>
-    public void GenerateResultEntry(DateTime timestamp, bool resetData = true) {
+    public void GenerateResultEntry(DateTime timestamp) {
         CalculateAverages();
         results.GenerateAndAddResultEntry(timestamp, this);
-        if (resetData) {Reset();}
     }
 
     // ###########################################################################################
@@ -122,7 +122,9 @@ public class ResultTracker {
             averageContentLength = 0;
         }
         try {
-            failRate = (requestsCount / failuresCount) * 100;
+            if (requestsCount != 0 && failuresCount != 0) {
+                failRate = (requestsCount / failuresCount) * 100;
+            }
         } catch (DivideByZeroException) {
             failRate = 0;
         }
