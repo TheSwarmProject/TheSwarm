@@ -69,8 +69,6 @@ internal class TaskSet {
                 ((SwarmClient) prop.GetValue(this.taskSetInstance)).SetTaskExecutor(executor);
             else
                 throw new Exception($"Type {prop.GetType().Name} is not a sub-class of SwarmClient and thus cannot be registered as one");
-
-        Console.WriteLine($"Tasks: {this.Tasks.ToArray()}");
     }
 
     /// <summary>

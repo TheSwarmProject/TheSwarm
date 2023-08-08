@@ -41,7 +41,5 @@ public class OneShotTaskExecutor : TaskExecutor {
             
         if (taskSet.Teardown is not null)
             taskSet.Teardown.Execute();
-
-        Console.WriteLine("Task loop exited");
     }
 }

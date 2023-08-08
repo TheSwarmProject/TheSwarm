@@ -2,6 +2,7 @@ using TheSwarm.Interfaces;
 using TheSwarm.Attributes;
 using TheSwarm.Components.Listener;
 using TheSwarm.Components.Executors;
+using TheSwarm.Common;
 
 namespace TheSwarm;
 
@@ -20,7 +21,7 @@ public static class SwarmBuilder {
 
         internal Builder() { scenario = new SwarmPreparedTestScenario(); }
 
-        public Builder InitializeResultsListener(SwarmListenerMode mode, bool printStats = true) {
+        public Builder InitializeResultsListener(SwarmListenerMode mode, bool printStats = true, LoggingLevel loggingLevel = LoggingLevel.INFO) {
             scenario.SetResultsListener(new ResultsListener(mode, printStats));
             return this;
         }

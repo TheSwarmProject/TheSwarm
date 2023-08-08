@@ -11,6 +11,7 @@ namespace TheSwarm.Components.Listener;
 /// prints current values (if specified) and generates output report as either raw JSON or single-page HTML.
 /// </summary>
 public class ResultsListener {
+    private LoggingChannel log {get; init;}
     private SwarmListenerMode mode {get; init;}
     private Dictionary<string, ResultTracker> resultTrackers {get; init;} = new Dictionary<string, ResultTracker>();
     private List<DateTime> timestamps {get; init;} = new List<DateTime>();
@@ -19,7 +20,8 @@ public class ResultsListener {
 
     private bool printData {get; set;}
 
-    public ResultsListener(SwarmListenerMode mode = SwarmListenerMode.Local, bool printData = true) {
+    public ResultsListener(SwarmListenerMode mode = SwarmListenerMode.Local, bool printData = true, LoggingLevel logLevel = LoggingLevel.INFO) {
+        this.log = Logger.CreateChannel("ResultsListener", logLevel);
         this.mode = mode;
         this.printData = printData;
 
@@ -113,19 +115,19 @@ public class ResultsListener {
 
         // TODO: Add logger to the class and replace WriteLine calls with it.
         if (printData)
-            Console.WriteLine("------------------------------------------------------------------------------------------");
+            log.Info("------------------------------------------------------------------------------------------");
         // Working off the copy of dict keys - in case additional entries are added during execution
         foreach(string key in resultTrackers.Keys.ToArray()) {
             ResultTracker tracker = resultTrackers[key];
             lock (tracker) {
                 tracker.GenerateResultEntry(timestamp);
                 if (printData)
-                    Console.WriteLine($"({tracker.method}){tracker.name} - {tracker.reqCount} requests - {tracker.averageResponseTime}ms avg - {tracker.averageRequestsPerSecond} rps avg - {tracker.averageContentLength} bytes avg - {tracker.failRate}% failed");
+                    log.Info($"({tracker.method}){tracker.name} - {tracker.reqCount} requests - {tracker.averageResponseTime}ms avg - {tracker.averageRequestsPerSecond} rps avg - {tracker.averageContentLength} bytes avg - {tracker.failRate}% failed");
                 if (resetData)
                     tracker.Reset();
             }
         }
         if (printData)
-            Console.WriteLine("------------------------------------------------------------------------------------------\n\n");
+            log.Info("------------------------------------------------------------------------------------------\n\n");
     }
 }
