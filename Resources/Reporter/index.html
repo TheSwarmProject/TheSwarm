@@ -159,7 +159,7 @@
             </div>
             <div class="shaded_container" style="width: 30%; height: 94%; display: flex; flex-direction: column; align-items: center;">
                 <h3>Requests amounts</h3>
-                <div id="responses_table_container" class="shaded_container" style="overflow: auto; width: 98%; height: 95%;">
+                <div id="responses_table_container" class="shaded_container" style="overflow: auto; width: 98%; height: 90%;">
                     <table id="requests_table" class="sortable">
                         <tr>
                             <th>Call</th>
@@ -214,15 +214,25 @@
     <div class="section_sub_container shaded_container" style="padding: 3px; display: flex; justify-content: space-evenly; align-items: center; flex-direction: column;">
         <h2>Failures analysis</h2>
         <div style="display: flex; flex-direction: row; align-items: center; justify-content:space-between; height: 94%; width: 100%;">
-            <div class="shaded_container" style="display: flex; height: 85%; width: 35%; align-items: center; justify-content: center; flex-direction: column;">
+            <div class="shaded_container" style="display: flex; height: 90%; width: 25%; align-items: center; justify-content: center; flex-direction: column;">
                 <h3>Failures percentage</h3>
-                <div class="shaded_container" style="width: 95%; height: 80%;">
-                    <canvas id="failures_percentage_doughnut"></canvas>
+                <div id="failures_distribution_container" class="shaded_container" style="width: 95%; height: 80%; display: flex; justify-content: center; align-items: center;">
+                    <h1 id="failures_distribution_na">N/A</h1>
                 </div>
             </div>
 
-            <div class="shaded_container" style="display: flex; height: 85%; width: 55%; align-items: center; justify-content: center;">
+            <div class="shaded_container" style="display: flex; height: 90%; width: 25%; align-items: center; justify-content: center; flex-direction: column;">
+                <h3>Failures amounts</h3>
+                <div id="failures_amounts_container" class="shaded_container" style="width: 95%; height: 80%; display: flex; justify-content: center; overflow: auto;">
+                    <h1 id="failures_amounts_na" style="align-self: center;">N/A</h1>
+                </div>
+            </div>
 
+            <div class="shaded_container" style="display: flex; height: 90%; width: 50%; align-items: center; justify-content: center; flex-direction: column;">
+                <h3>Failures by reason</h3>
+                <div id="failures_by_reason_container" class="shaded_container" style="width: 95%; height: 80%; display: flex; justify-content: center; overflow: auto;">
+                    <h1 id="failures_by_reason_na" style="align-self: center;">N/A</h1>
+                </div>
             </div>
         </div>
     </div>

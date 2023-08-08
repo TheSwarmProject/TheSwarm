@@ -5,7 +5,6 @@
 // We store the datasets for use in alasysis sections
 var averages_datasets = [];
 var rps_datasets = [];
-var failure_datasets = [];
 
 var total_averages_chart = null;
 var total_rps_chart = null;
@@ -60,6 +59,7 @@ function draw_all_rps() {
 function draw_all_failures() {
     var ctx = document.getElementById("all_failures_chart");
 
+    var failure_datasets = [];
     results_data.Results.forEach(entry => {
         let resultSet = new SwarmResultSet(entry.Data)
         let dataset = {
@@ -661,8 +661,136 @@ function populate_rps_summary_table() {
 
 var failures_percentage_doughnut_chart = null;
 var failures_data = [];
+// Flag value - We do not draw any analysis graphs and tables if there's nothing to analyze
+var failures_found = false;
 
+function failures_distribution_doughnut_chart() {
+    // Unlike previous 2 sections - analysis and total chart use different types of data, so we have to iterate over initial data dump once more
+    results_data.Results.forEach(entry => {
+        let resultSet = new SwarmResultSet(entry.Data)
+        let failure_data = {
+            Name: entry.Name,
+            TotalFailuresByReason: [],
+            TotalFailures: 0
+        }
 
+        let total_failures_by_reason = new Map();
+        for (let index = 0; index < resultSet.Size; index++) {
+            let occurrences = resultSet.GetItem("failuresOccurrences", index);
+            for (const row in occurrences) {
+                if(total_failures_by_reason.has(row)) {
+                    total_failures_by_reason.set(row, total_failures_by_reason.get(row) + occurrences[row]);
+                } else {
+                    total_failures_by_reason.set(row, occurrences[row]);
+                }
+            }
+            failure_data.TotalFailures += resultSet.GetItem("failuresCount", index);
+            failure_data.TotalFailuresByReason = total_failures_by_reason;
+        }
+
+        if (!failures_found && failure_data.TotalFailures > 0) {
+            failures_found = true;
+        }
+        failures_data.push(failure_data);
+    });
+
+    if (failures_found) {
+        let doughnutLabels = [];
+        let doughnutData = [];
+
+        failures_data.forEach(entry => {
+            doughnutLabels.push(entry.Name);
+            doughnutData.push(entry.TotalFailures)
+        })
+
+        let data = {
+            datasets: [
+                {
+                    data: doughnutData
+                }
+            ],
+            labels: doughnutLabels
+        }
+
+        document.getElementById("failures_distribution_na").remove();
+        let chart_canvas = document.createElement("canvas");
+        chart_canvas.id = "failures_distribution_doughnut";
+        document.getElementById("failures_distribution_container").appendChild(chart_canvas);
+        failures_percentage_doughnut_chart = draw_doughnut_chart(document.getElementById("failures_distribution_doughnut"), data, "");
+    }
+}
+
+function draw_failures_amounts_table() {
+    if (!failures_found) {return;}
+
+    document.getElementById("failures_amounts_na").remove();
+
+    let headers = [
+        { Text: "Call" },
+        {
+            Text: "Total failed requests",
+            Class: "sorttable_numeric"
+        }
+    ];
+
+    createTable("failures_amount_table", document.getElementById("failures_amounts_container"), headers);
+
+    let table_body = document.querySelector("#failures_amount_table tbody");
+
+    failures_data.forEach(entry => {
+        let row = document.createElement("tr");
+        let name = document.createElement("td");
+        let failures = document.createElement("td");
+
+        name.innerHTML = entry.Name;
+        failures.innerHTML = entry.TotalFailures;
+
+        row.appendChild(name);
+        row.appendChild(failures);
+        table_body.appendChild(row);
+    });
+
+    sorttable.makeSortable(document.querySelector("#failures_amount_table"));
+}
+
+function draw_failures_by_reason_table() {
+    if (!failures_found) {return;}
+
+    document.getElementById("failures_by_reason_na").remove();
+
+    let headers = [
+        { Text: "Call" },
+        { Text: "Error"},
+        {
+            Text: "Occurrences",
+            Class: "sorttable_numeric"
+        }
+    ];
+
+    createTable("failures_by_reason_table", document.getElementById("failures_by_reason_container"), headers);
+
+    let table_body = document.querySelector("#failures_by_reason_table tbody");
+
+    failures_data.forEach(entry => {
+        entry.TotalFailuresByReason.forEach((value, key) => {
+            let row = document.createElement("tr");
+            let name = document.createElement("td");
+            let error = document.createElement("td");
+            let occurrences = document.createElement("td");
+
+            name.innerHTML = entry.Name;
+            error.innerHTML = escapeHTML(key);
+            occurrences.innerHTML = value;
+
+            row.appendChild(name);
+            row.appendChild(error);
+            row.appendChild(occurrences);
+            table_body.appendChild(row);
+        })
+    });
+
+    sorttable.makeSortable(document.querySelector("#failures_by_reason_table"));
+}
 
 /*
 ############################## Service functions ##############################
@@ -685,6 +813,9 @@ function load_data() {
     populate_rps_summary_table();
 
     draw_all_failures();
+    failures_distribution_doughnut_chart();
+    draw_failures_amounts_table();
+    draw_failures_by_reason_table();
 }
 
 /**
@@ -770,4 +901,17 @@ function createTable(id, container, headers) {
     table.appendChild(foot);
 
     container.appendChild(table);
+}
+
+/**
+ * Takes the string and escapes the parts of HTML tags to make sure they're displayed correctly
+ * @param {string} value - String to process
+ * @returns - Escaped string
+ */
+function escapeHTML(value) {
+    return value.replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#39;");
 }
