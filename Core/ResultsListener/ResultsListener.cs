@@ -1,5 +1,5 @@
 using TheSwarm.Common;
-using TheSwarm.Utils;
+using TheSwarm.Common.Utils;
 using TheSwarm.Attributes;
 using System.Text.Json;
 using System.Text.Json.Serialization;
@@ -60,9 +60,16 @@ public class ResultsListener {
         if (mode == SwarmListenerMode.Local || mode == SwarmListenerMode.Hub) {
             // TODO: We'll need to parametrize it during listener initialization in SwarmBuilder. For the time being we hard-code it
             string dirName = $"Results/{DateTime.Now.ToString("yyyy-MM-ddTHH-mm-ss")}";
+            DirectoryInfo reportDir;
             if (!Directory.Exists(dirName))
-                Directory.CreateDirectory(dirName);
-
+                reportDir = Directory.CreateDirectory(dirName);
+            else
+                reportDir = new DirectoryInfo(dirName);
+            
+            // Copying static files
+            DirectoryInfo reporterFiles = new DirectoryInfo("Resources/Reporter");
+            FileUtils.CopyAll(reporterFiles, reportDir);
+            
             // We'll do away with anonymous objects here, since these aren't used anywhere else
             var results = new List<object>();
             foreach (KeyValuePair<string, ResultTracker> tracker in resultTrackers)
@@ -73,17 +80,20 @@ public class ResultsListener {
                         Values = tracker.Value.results.ResultsList
                     }
                 });
-            
-            File.WriteAllText(
-                $"{dirName}/results.json",
-                JsonSerializer.Serialize(
+
+            string serializedData = JsonSerializer.Serialize(
                     new {
                         Results = results,
                         Timestamps = timestamps
                     }, 
                     new JsonSerializerOptions() {
                         NumberHandling = JsonNumberHandling.AllowNamedFloatingPointLiterals
-                        }));
+                        });
+            string dataFileContents = $"const results_data = {serializedData}";
+            
+            File.WriteAllText(
+                $"{dirName}/res/data.js",
+                dataFileContents);
         }
     }
 

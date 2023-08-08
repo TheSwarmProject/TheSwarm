@@ -72,7 +72,10 @@ public class ResultTracker {
         if(failuresOccurrences.ContainsKey(failureMessage))
             failuresOccurrences[failureMessage] += 1;
         else
-            failuresOccurrences[failureMessage] = 1;
+            if (failureMessage is null)
+                failuresOccurrences["null"] = 1;
+            else
+                failuresOccurrences[failureMessage] = 1;
     }
 
     /// <summary>
