@@ -4,6 +4,8 @@ using TheSwarmClient.Attributes;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
+using System.Reflection;
+
 namespace TheSwarmClient.Components.Listener;
 
 /// <summary>
@@ -69,7 +71,8 @@ public class ResultsListener {
                 reportDir = new DirectoryInfo(dirName);
             
             // Copying static files
-            DirectoryInfo reporterFiles = new DirectoryInfo("Reporter");
+            var addinFolder = Path.GetDirectoryName(Assembly.GetAssembly(typeof(ResultsListener)).Location);
+            DirectoryInfo reporterFiles = new DirectoryInfo($"{addinFolder}/{new DirectoryInfo("Reporter").ToString()}"); 
             FileUtils.CopyAll(reporterFiles, reportDir);
             
             // We'll do away with anonymous objects here, since these aren't used anywhere else
