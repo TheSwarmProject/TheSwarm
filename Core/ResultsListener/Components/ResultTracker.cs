@@ -1,4 +1,4 @@
-namespace TheSwarm.Components;
+namespace TheSwarmClient.Components;
 
 /// <summary>
 /// Type, used to store current results for particular request. It is created once during test lifetime and it used as value in ResultsListener dict

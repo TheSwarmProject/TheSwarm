@@ -1,10 +1,10 @@
-using TheSwarm.Attributes;
-using TheSwarm.Extendables;
-using TheSwarm.Components.Listener;
-using TheSwarm.Components.Executors;
-using TheSwarm.Common;
+using TheSwarmClient.Attributes;
+using TheSwarmClient.Extendables;
+using TheSwarmClient.Components.Listener;
+using TheSwarmClient.Components.Executors;
+using TheSwarmClient.Common;
 
-namespace TheSwarm;
+namespace TheSwarmClient;
 
 /// <summary>
 /// Main entry point for a user - this factory class is used to initialize instances of results listener and task executor.

@@ -1,4 +1,4 @@
-namespace TheSwarm.Common;
+namespace TheSwarmClient.Common;
 
 public static class Logger {
     private static Dictionary<string, LoggingChannel> loggingChannels = new Dictionary<string, LoggingChannel>();

@@ -1,6 +1,6 @@
 using System.Text;
 
-namespace TheSwarm.Common; 
+namespace TheSwarmClient.Common; 
 
 /// <summary>
 /// Object, used to provide ResultsListener with information on request's execution.
@@ -21,9 +21,10 @@ public class Response {
         this.Method             = method;
         this.ResponseTimeMs     = responseTimeMs;
         this.ByteContent        = byteContent;
-        if (isString)
+        if (isString && ByteContent is not null)
             this.StringContent  = Encoding.UTF8.GetString(this.ByteContent, 0, this.ByteContent.Length);
-        this.ContentLengthBytes = byteContent.Length;
+        if (ByteContent is not null)
+            this.ContentLengthBytes = byteContent.Length;
         this.IsFailed           = isFailed;
         this.FailureMessage     = failureMessage;
     }

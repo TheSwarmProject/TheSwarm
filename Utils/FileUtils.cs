@@ -1,4 +1,4 @@
-namespace TheSwarm.Utils;
+namespace TheSwarmClient.Utils;
 
 /// <summary>
 /// Utilities for working with files and folders

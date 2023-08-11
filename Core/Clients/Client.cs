@@ -1,4 +1,6 @@
-namespace TheSwarm.Extendables; 
+using TheSwarmClient.Interfaces;
+
+namespace TheSwarmClient.Extendables; 
 
 public abstract class SwarmClient {
     protected TaskExecutor TaskExecutor {get; set;}
@@ -13,4 +15,7 @@ public abstract class SwarmClient {
             Thread.Sleep(10);
         }
     }
+
+    public Transaction Transaction(string name, Action action) => new Transaction(name, action, TaskExecutor);
+    public ParallelTransaction ParallelTransaction (string name) => new ParallelTransaction(name, TaskExecutor);
 }

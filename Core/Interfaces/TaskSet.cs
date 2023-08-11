@@ -1,8 +1,8 @@
 using System.Reflection;
-using TheSwarm.Attributes;
-using TheSwarm.Extendables;
+using TheSwarmClient.Attributes;
+using TheSwarmClient.Extendables;
 
-namespace TheSwarm.Interfaces;
+namespace TheSwarmClient.Interfaces;
 
 /// <summary>
 /// Internal wrapper, used to initialize and process the SwarmTaskSet type.

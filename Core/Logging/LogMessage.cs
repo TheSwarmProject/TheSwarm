@@ -1,4 +1,4 @@
-namespace TheSwarm.Common;
+namespace TheSwarmClient.Common;
 
 public class LogMessage {
     public string Source {get; private set;} = "";

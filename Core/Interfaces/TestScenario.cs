@@ -1,9 +1,9 @@
 using System.Reflection;
-using TheSwarm.Components.Listener;
-using TheSwarm.Extendables;
-using TheSwarm.Attributes;
+using TheSwarmClient.Components.Listener;
+using TheSwarmClient.Extendables;
+using TheSwarmClient.Attributes;
 
-namespace TheSwarm;
+namespace TheSwarmClient;
 
 public class SwarmPreparedTestScenario {
     private Thread? scenarioRunner {get; set;}

@@ -1,9 +1,9 @@
-using TheSwarm.Components.Listener;
-using TheSwarm.Extendables;
-using TheSwarm.Interfaces;
-using TheSwarm.Attributes;
+using TheSwarmClient.Components.Listener;
+using TheSwarmClient.Extendables;
+using TheSwarmClient.Interfaces;
+using TheSwarmClient.Attributes;
 
-namespace TheSwarm.Components.Executors; 
+namespace TheSwarmClient.Components.Executors; 
 
 /// <summary>
 /// Default task executor class. Used to run one-time task and then expire.

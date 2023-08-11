@@ -1,4 +1,4 @@
-namespace TheSwarm.Common;
+namespace TheSwarmClient.Common;
 
 public class LoggingChannel {
     private string ChannelName {get; set;}

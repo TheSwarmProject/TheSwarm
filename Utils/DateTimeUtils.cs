@@ -1,7 +1,7 @@
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
-namespace TheSwarm.Utils;
+namespace TheSwarmClient.Utils;
 
 /// <summary>
 /// Custom DateTime converter for JsonSerializer

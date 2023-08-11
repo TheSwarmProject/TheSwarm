@@ -1,6 +1,6 @@
-namespace TheSwarm.Attributes 
+namespace TheSwarmClient.Attributes 
 {
-    using TheSwarm.Extendables;
+    using TheSwarmClient.Extendables;
 
     [System.AttributeUsage(System.AttributeTargets.Class)]
     public class SwarmTaskSet : System.Attribute {
@@ -95,7 +95,7 @@ namespace TheSwarm.Attributes
     }
 }
 
-namespace TheSwarm.Extendables
+namespace TheSwarmClient.Extendables
 {
     /// <summary>
     /// For convenience - we use Task set attributes as both attribute annotations AND method containers (method is to be assigned during TaskSet initialization).

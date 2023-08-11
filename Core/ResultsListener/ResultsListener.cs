@@ -1,10 +1,10 @@
-using TheSwarm.Common;
-using TheSwarm.Utils;
-using TheSwarm.Attributes;
+using TheSwarmClient.Common;
+using TheSwarmClient.Utils;
+using TheSwarmClient.Attributes;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
-namespace TheSwarm.Components.Listener;
+namespace TheSwarmClient.Components.Listener;
 
 /// <summary>
 /// One of the main workhorses of the system - it collects data gathered by executors, calculates averages, 
@@ -69,7 +69,7 @@ public class ResultsListener {
                 reportDir = new DirectoryInfo(dirName);
             
             // Copying static files
-            DirectoryInfo reporterFiles = new DirectoryInfo("Resources/Reporter");
+            DirectoryInfo reporterFiles = new DirectoryInfo("Reporter");
             FileUtils.CopyAll(reporterFiles, reportDir);
             
             // We'll do away with anonymous objects here, since these aren't used anywhere else
