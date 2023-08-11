@@ -1,5 +1,5 @@
 using TheSwarm.Common;
-using TheSwarm.Common.Utils;
+using TheSwarm.Utils;
 using TheSwarm.Attributes;
 using System.Text.Json;
 using System.Text.Json.Serialization;

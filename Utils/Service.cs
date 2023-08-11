@@ -1,6 +1,6 @@
 using System.Reflection;
 
-namespace TheSwarm.Utils.Service;
+namespace TheSwarm.Utils;
 
 public static class AttributeHelper {
     public static bool TypeContainsAttribute(Type type, Type attribute) {

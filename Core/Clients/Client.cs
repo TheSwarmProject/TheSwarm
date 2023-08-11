@@ -1,4 +1,4 @@
-namespace TheSwarm.Interfaces; 
+namespace TheSwarm.Extendables; 
 
 public abstract class SwarmClient {
     protected TaskExecutor TaskExecutor {get; set;}

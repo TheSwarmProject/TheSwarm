@@ -1,6 +1,6 @@
 using TheSwarm.Common;
 using TheSwarm.Utils;
-using TheSwarm.Interfaces;
+using TheSwarm.Extendables;
 
 namespace TheSwarm.Clients;
 

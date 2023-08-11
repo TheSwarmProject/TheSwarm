@@ -1,8 +1,9 @@
 using TheSwarm.Common;
+using TheSwarm.Interfaces;
 using TheSwarm.Components.Listener;
 using System.Diagnostics;
 
-namespace TheSwarm.Interfaces; 
+namespace TheSwarm.Extendables; 
 
 /// <summary>
 /// Task Executor template class - defines the basic attributes and methods to be used by all task executor types.
