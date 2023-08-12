@@ -1,0 +1,30 @@
+<?xml version="1.0"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
+    <metadata>
+        <id>TheSwarmClient</id>
+        <version>0.13</version>
+        <authors>VizanArkonin</authors>
+        <owners>VizanArkonin</owners>
+        <projectUrl>https://github.com/TheSwarmProject/TheSwarmClient</projectUrl>
+        <icon>images/icon.png</icon>
+        <license type="expression">MIT</license>
+        <requireLicenseAcceptance>false</requireLicenseAcceptance>
+        <releaseNotes></releaseNotes>
+        <description>TBD</description>
+
+        <!-- <tags>qa performance-testing</tags> -->
+        <dependencies>
+            <group targetFramework="net7.0" />
+        </dependencies>
+
+         <contentFiles>
+            <files include="**\*.*" buildAction="none" copyToOutput="true"/> 
+         </contentFiles>
+    </metadata>
+
+    <files>
+        <file src="icon.png" target="images/" />
+        <file src="Resources/**" target="contentFiles/any/any" />
+        <file src="bin/Debug/net7.0/TheSwarmClient.dll" target="lib/net7.0"></file>
+    </files>
+</package>

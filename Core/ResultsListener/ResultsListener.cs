@@ -71,8 +71,8 @@ public class ResultsListener {
                 reportDir = new DirectoryInfo(dirName);
             
             // Copying static files
-            var addinFolder = Path.GetDirectoryName(Assembly.GetAssembly(typeof(ResultsListener)).Location);
-            DirectoryInfo reporterFiles = new DirectoryInfo($"{addinFolder}/{new DirectoryInfo("Reporter").ToString()}"); 
+            string addinFolder = Path.GetDirectoryName(Assembly.GetAssembly(typeof(ResultsListener)).Location);
+            DirectoryInfo reporterFiles = new DirectoryInfo($"{addinFolder}/{new DirectoryInfo("Resources/Reporter").ToString()}"); 
             FileUtils.CopyAll(reporterFiles, reportDir);
             
             // We'll do away with anonymous objects here, since these aren't used anywhere else
