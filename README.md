@@ -51,8 +51,8 @@ SwarmPreparedTestScenario scenario = TheSwarmClient.SwarmBuilder
         .InitializeLoopedTaskExecutor()                                                 // Initialize looped task executor
         .SetExecutorTaskSet("TC-1")                                                     // Use the task set TC-1 we've created earlier
         .SetExecutorSequence((executor) =>                                              // Define the executor sequence - the scenario itself
-            executor.
-                CreateUsers(5)                                                          // Create 5 users at once and start execution
+            executor
+                .CreateUsers(5)                                                         // Create 5 users at once and start execution
                 .WaitSeconds(10)                                                        // Keep them working for 10 seconds
                 )
         .Build();
