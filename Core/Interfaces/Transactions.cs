@@ -30,7 +30,7 @@ public class Transaction
             action();
             DateTime endTime = DateTime.Now;
 
-            Response res = new Response(name, "(TRANSACTION)", (int)(endTime - startTime).TotalMilliseconds, null);
+            Response res = new Response(name, "TRANSACTION", (int)(endTime - startTime).TotalMilliseconds, null);
             executor.LogEntry(res);
         } else
             throw new Exception("Transaction directive was not set. Aborting");
@@ -72,7 +72,7 @@ public class ParallelTransaction
                 runner.Join();
             DateTime endTime = DateTime.Now;
 
-            Response res = new Response(name, "(TRANSACTION)", (int)(endTime - startTime).TotalMilliseconds, null);
+            Response res = new Response(name, "TRANSACTION", (int)(endTime - startTime).TotalMilliseconds, null);
             executor.LogEntry(res);
         } else
             throw new Exception("No actions were provided. Aborting");
