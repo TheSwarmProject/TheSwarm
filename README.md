@@ -14,6 +14,10 @@ Task sets are created by marking the type with **SwarmTaskSet** annotation. Task
 - The task methods themselves, decorated with **SwarmTask** attribute
 - Optionally, task set can have pre/after test methods (**SwarmTaskSetSetup** and **SwarmTaskSetTeardown**) and pre/after task methods (**SwarmBeforeTask** and **SwarmAfterTask**) - former are executed once in the beginning and end of the test, and the latter are executed before and after each task.
 ```cs
+using TheSwarmClient;
+using TheSwarmClient.Clients;
+using TheSwarmClient.Attributes;
+
 [SwarmTaskSet(TaskSetID = "TC-1", Description = "Test taskset")]
 public class TestClass
 {
