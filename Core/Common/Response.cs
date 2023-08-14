@@ -10,22 +10,28 @@ public class Response {
     public string Name {get;}
     public string Method {get;}
     public int ResponseTimeMs {get;}
+    /// <summary>
+    /// This property contains the client return object. Since types might vary from client to client, we leave it a plain object for now.
+    /// TODO: I think it might straightened out by using generics. Get back to it and look for more elegant solution.
+    /// </summary>
+    public object ResponseObject {get;}
     public byte[] ByteContent {get;}
     public string StringContent {get;} = "";
     public long ContentLengthBytes {get;}
     public bool IsFailed {get;}
     public string FailureMessage {get;}
 
-    public Response(string name, string method, int responseTimeMs, byte[] byteContent, bool isString = true, bool isFailed = false, string failureMessage = "") {
-        this.Name               = name;
-        this.Method             = method;
-        this.ResponseTimeMs     = responseTimeMs;
-        this.ByteContent        = byteContent;
+    public Response(string name, string method, int responseTimeMs, object responseObject, byte[] byteContent, bool isString = true, bool isFailed = false, string failureMessage = "") {
+        Name               = name;
+        Method             = method;
+        ResponseTimeMs     = responseTimeMs;
+        ResponseObject     = responseObject;
+        ByteContent        = byteContent;
         if (isString && ByteContent is not null)
-            this.StringContent  = Encoding.UTF8.GetString(this.ByteContent, 0, this.ByteContent.Length);
+            StringContent  = Encoding.UTF8.GetString(ByteContent, 0, ByteContent.Length);
         if (ByteContent is not null)
-            this.ContentLengthBytes = byteContent.Length;
-        this.IsFailed           = isFailed;
-        this.FailureMessage     = failureMessage;
+            ContentLengthBytes = byteContent.Length;
+        IsFailed           = isFailed;
+        FailureMessage     = failureMessage;
     }
 }
