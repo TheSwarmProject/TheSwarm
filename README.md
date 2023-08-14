@@ -29,7 +29,7 @@ public class TestClass
     [SwarmTaskSetSetup]
     public void Setup()
     {
-        client.BaseURI = "https://google.com/";
+        client.BaseURL = "https://google.com/";
     }
 
     // Tasks can have weight (more weight - higher chance to be executed) and set delay after the execution in milliseconds
