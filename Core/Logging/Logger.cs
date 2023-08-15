@@ -1,8 +1,10 @@
+using TheSwarmClient.Configuration;
+
 namespace TheSwarmClient.Common;
 
 public static class Logger
 {
-    private static Dictionary<string, LoggingChannel>   loggingChannels = new Dictionary<string, LoggingChannel>();
+    private static Dictionary<string, LoggingChannel>   loggingChannels         = new Dictionary<string, LoggingChannel>();
     private static LoggingChannel                       log                     { get; set; }
     private static LoggingLevel                         defaultLoggingLevel     { get; set; }
     public static string                                LogsDirectory           { get; private set; } = "";
@@ -22,6 +24,10 @@ public static class Logger
     {
         defaultLoggingLevel = LoggingLevel.INFO;
         log = new LoggingChannel("LoggingManager", defaultLoggingLevel);
+        LogsDirectory = ConfigManager.Logging.LogsDirectory;
+        logFilePrefix = ConfigManager.Logging.LogFilePrefix;
+        logFileSizeLimit = ConfigManager.Logging.MaximumLogFileSizeKb;
+        writeToFile = ConfigManager.Logging.LogToFile;
     }
 
     /// <summary>
@@ -61,7 +67,8 @@ public static class Logger
         }
         else
         {
-            LoggingChannel channel = new LoggingChannel(channelName, defaultLoggingLevel);
+            LoggingLevel level = ConfigManager.Logging.LoggingChannels.ContainsKey(channelName) ? ConfigManager.Logging.LoggingChannels[channelName] : defaultLoggingLevel;
+            LoggingChannel channel = new LoggingChannel(channelName, level);
             loggingChannels[channelName] = channel;
             return channel;
         }
@@ -166,7 +173,7 @@ public static class Logger
             if (currentLogFileName == "" || currentFileSize >= logFileSizeLimit * 1024)
             {
                 Directory.CreateDirectory(LogsDirectory);
-                currentLogFileName = $"{LogsDirectory}/{logFilePrefix}_{DateTime.UtcNow.ToString("MM-dd-yy_HH:mm:ss.ffff")}.log";
+                currentLogFileName = $"{LogsDirectory}/{logFilePrefix}_{DateTime.UtcNow.ToString("MM-dd-yy_HH-mm-ss.ffff")}.log";
                 File.Create(currentLogFileName).Close();
                 currentFileSize = 0;
             }

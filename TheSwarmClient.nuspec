@@ -2,7 +2,7 @@
 <package xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
     <metadata>
         <id>TheSwarmClient</id>
-        <version>0.16</version>
+        <version>0.20</version>
         <authors>VizanArkonin</authors>
         <owners>VizanArkonin</owners>
         <projectUrl>https://github.com/TheSwarmProject/TheSwarmClient</projectUrl>

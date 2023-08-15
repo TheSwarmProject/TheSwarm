@@ -1,6 +1,7 @@
 using TheSwarmClient.Common;
 using TheSwarmClient.Utils;
 using TheSwarmClient.Attributes;
+using TheSwarmClient.Configuration;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
@@ -74,7 +75,7 @@ public class ResultsListener
         if (mode == SwarmListenerMode.Local || mode == SwarmListenerMode.Hub)
         {
             // TODO: We'll need to parametrize it during listener initialization in SwarmBuilder. For the time being we hard-code it
-            string dirName = $"Results/{DateTime.Now.ToString("yyyy-MM-ddTHH-mm-ss")}";
+            string dirName = $"{ConfigManager.General.ResultsLocation}/{DateTime.Now.ToString("yyyy-MM-ddTHH-mm-ss")}";
             DirectoryInfo reportDir;
             if (!Directory.Exists(dirName))
                 reportDir = Directory.CreateDirectory(dirName);
