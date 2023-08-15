@@ -12,9 +12,9 @@ namespace TheSwarmClient.Interfaces;
 /// </summary>
 public class Transaction
 {
-    private string name { get; init; }
-    private Action action { get; init; }
-    private TaskExecutor executor {get; init;}
+    private string name             { get; init; }
+    private Action action           { get; init; }
+    private TaskExecutor executor   { get; init; }
 
     public Transaction(string name, Action sequenceToExecute, TaskExecutor executor)
     {
@@ -33,7 +33,8 @@ public class Transaction
 
             Response res = new Response(name, "TRANSACTION", (int)(endTime - startTime).TotalMilliseconds, null, null);
             executor.LogEntry(res);
-        } else
+        }
+        else
             throw new Exception("Transaction directive was not set. Aborting");
     }
 }
@@ -46,11 +47,12 @@ public class Transaction
 /// </summary>
 public class ParallelTransaction
 {
-    private string name { get; init; }
-    private List<Action> actions {get; init;} = new List<Action>();
-    private TaskExecutor executor {get; init;}
+    private string          name        { get; init; }
+    private List<Action>    actions     { get; init; } = new List<Action>();
+    private TaskExecutor    executor    { get; init; }
 
-    public ParallelTransaction(string name, TaskExecutor executor) {
+    public ParallelTransaction(string name, TaskExecutor executor)
+    {
         this.name = name;
         this.executor = executor;
     }
@@ -61,21 +63,23 @@ public class ParallelTransaction
     {
         if (actions.Count > 0)
         {
-            
+
             DateTime startTime = DateTime.Now;
             List<Thread> runners = new List<Thread>();
-            foreach (Action action in actions) {
+            foreach (Action action in actions)
+            {
                 Thread runner = new Thread(() => action());
                 runners.Add(runner);
                 runner.Start();
             }
-            foreach(Thread runner in runners)
+            foreach (Thread runner in runners)
                 runner.Join();
             DateTime endTime = DateTime.Now;
 
             Response res = new Response(name, "TRANSACTION", (int)(endTime - startTime).TotalMilliseconds, null, null);
             executor.LogEntry(res);
-        } else
+        }
+        else
             throw new Exception("No actions were provided. Aborting");
     }
 }

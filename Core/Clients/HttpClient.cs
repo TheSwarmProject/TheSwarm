@@ -11,8 +11,8 @@ namespace TheSwarmClient.Clients;
 /// </summary>
 public class SwarmHttpClient : SwarmClient
 {
-    public string BaseURL { get; set; } = "";
-    private HttpClient client { get; }
+    public string       BaseURL     { get; set; } = "";
+    private HttpClient  client      { get; }
 
     public SwarmHttpClient()
     {

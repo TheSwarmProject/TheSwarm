@@ -3,15 +3,17 @@ using TheSwarmClient.Extendables;
 using TheSwarmClient.Interfaces;
 using TheSwarmClient.Attributes;
 
-namespace TheSwarmClient.Components.Executors; 
+namespace TheSwarmClient.Components.Executors;
 
 /// <summary>
 /// Default task executor class. Used to run one-time task and then expire.
 /// </summary>
-public class OneShotTaskExecutor : TaskExecutor {
-    public OneShotTaskExecutor(ResultsListener resultsListener) : base(resultsListener) {}
+public class OneShotTaskExecutor : TaskExecutor
+{
+    public OneShotTaskExecutor(ResultsListener resultsListener) : base(resultsListener) { }
 
-    internal override void TaskLoop(ExecutorThread executor) {
+    internal override void TaskLoop(ExecutorThread executor)
+    {
         TaskSet taskSet = executor.TaskSet;
 
         if (taskSet.Setup is not null)
@@ -20,7 +22,8 @@ public class OneShotTaskExecutor : TaskExecutor {
             else
                 return;
 
-        foreach(SwarmTask task in taskSet.GetAllTasks()) {
+        foreach (SwarmTask task in taskSet.GetAllTasks())
+        {
             if (taskSet.BeforeTask is not null)
                 if (executor.IsRunning)
                     taskSet.BeforeTask.Execute();
@@ -38,7 +41,7 @@ public class OneShotTaskExecutor : TaskExecutor {
                 else
                     break;
         }
-            
+
         if (taskSet.Teardown is not null)
             taskSet.Teardown.Execute();
     }

@@ -10,9 +10,9 @@ namespace TheSwarmClient.Extendables;
 /// </summary>
 public abstract class TaskExecutor
 {
-    protected LoggingChannel log { get; init; }
-    protected ResultsListener resultsListener { get; set; }
-    protected List<ExecutorThread> executorThreads { get; } = new List<ExecutorThread>();
+    protected LoggingChannel        log             { get; init; }
+    protected ResultsListener       resultsListener { get; set; }
+    protected List<ExecutorThread>  executorThreads { get; } = new List<ExecutorThread>();
 
     internal Type? TaskSet { get; set; }
     internal abstract void TaskLoop(ExecutorThread executor);
