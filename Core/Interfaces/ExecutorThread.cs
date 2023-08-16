@@ -11,7 +11,7 @@ public class ExecutorThread
     /// <summary>
     /// Given the fact that each client using the task-set must be unique (1 client per executor thread) - we initialize an instance of task set for each executor thread
     /// </summary>
-    internal TaskSet    TaskSet     { get; init; }
+    public TaskSet      TaskSet     { get; init; }
     public bool         IsRunning   { get; set; }
     public bool         IsAlive => thread.IsAlive;
 

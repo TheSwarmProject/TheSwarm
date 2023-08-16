@@ -32,7 +32,10 @@ public static class SwarmBuilder
         {
             if (scenario.ResultsListener is null)
                 throw new Exception("Task executor requires results listener to be initialized first.");
-            scenario.SetTaskExecutor(new OneShotTaskExecutor(scenario.ResultsListener));
+            OneShotTaskExecutor executor = new OneShotTaskExecutor();
+            executor.SetResultsListener(scenario.ResultsListener);
+            scenario.SetTaskExecutor(executor);
+
             return this;
         }
 
@@ -40,7 +43,20 @@ public static class SwarmBuilder
         {
             if (scenario.ResultsListener is null)
                 throw new Exception("Task executor requires results listener to be initialized first.");
-            scenario.SetTaskExecutor(new LoopedTaskExecutor(scenario.ResultsListener));
+            LoopedTaskExecutor executor = new LoopedTaskExecutor();
+            executor.SetResultsListener(scenario.ResultsListener);
+            scenario.SetTaskExecutor(executor);
+
+            return this;
+        }
+
+        public Builder UseCustomTaskExecutor(TaskExecutor executor)
+        {
+            if (scenario.ResultsListener is null)
+                throw new Exception("Task executor requires results listener to be initialized first.");
+            executor.SetResultsListener(scenario.ResultsListener);
+            scenario.SetTaskExecutor(executor);
+            
             return this;
         }
 
@@ -57,6 +73,14 @@ public static class SwarmBuilder
         }
 
         public SwarmPreparedTestScenario Build() => scenario;
+
+        public ResultsListener GetResultsListener()
+        {
+            if (scenario.ResultsListener is not null)
+                return scenario.ResultsListener;
+            else
+                throw new Exception("Results listener was not initialized");
+        }
     }
 }
 

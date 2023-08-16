@@ -11,11 +11,11 @@ namespace TheSwarmClient.Extendables;
 public abstract class TaskExecutor
 {
     protected LoggingChannel        log             { get; init; }
-    protected ResultsListener       resultsListener { get; set; }
+    protected ResultsListener?      resultsListener { get; set; }
     protected List<ExecutorThread>  executorThreads { get; } = new List<ExecutorThread>();
 
     internal Type? TaskSet { get; set; }
-    internal abstract void TaskLoop(ExecutorThread executor);
+    public abstract void TaskLoop(ExecutorThread executor);
 
     protected int CurrentRequestsPerSecond { get; set; }
     protected int RequestsPerSecondLimit { get; set; }
@@ -28,11 +28,12 @@ public abstract class TaskExecutor
     /// </summary>
     public bool IsFinishing { get; private set; }
 
-    public TaskExecutor(ResultsListener resultsListener)
+    public TaskExecutor()
     {
-        this.resultsListener = resultsListener;
         this.log = Logger.CreateChannel(this.GetType().Name);
     }
+
+    public void SetResultsListener(ResultsListener resultsListener) => this.resultsListener = resultsListener;
 
     /// <summary>
     /// This method is merely a proxy between client and results listener - it simply routes Response

@@ -9,9 +9,7 @@ namespace TheSwarmClient.Components.Executors;
 /// </summary>
 public class LoopedTaskExecutor : TaskExecutor
 {
-    public LoopedTaskExecutor(ResultsListener resultsListener) : base(resultsListener) { }
-
-    internal override void TaskLoop(ExecutorThread executor)
+    public override void TaskLoop(ExecutorThread executor)
     {
         TaskSet taskSet = executor.TaskSet;
 

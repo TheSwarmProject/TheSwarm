@@ -7,7 +7,7 @@ namespace TheSwarmClient.Interfaces;
 /// <summary>
 /// Internal wrapper, used to initialize and process the SwarmTaskSet type.
 /// </summary>
-internal class TaskSet
+public class TaskSet
 {
     private object taskSetInstance          { get; init; }
     private SwarmTaskSet taskSetParams      { get; set; }
