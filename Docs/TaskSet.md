@@ -14,7 +14,7 @@ public class TestClass
 ```
 - Any task-set must contain at least 1 task - **no-arguments, void-type method**, marked with **SwarmTask** annotation. This annotation has 2 optional parameters:
     - **Weight** - Weight of the task. The higher the value - the higher the chances of this task to be executed.
-    - **DelayAfterExecution** - the amount of delay in milliseconds after the task execution.
+    - **DelayAfterExecution** - the length of delay in milliseconds after the task execution.
 ```cs
 [SwarmTask(Weight = 15, DelayAfterExecution = 50)]
 public void OpenIndex()

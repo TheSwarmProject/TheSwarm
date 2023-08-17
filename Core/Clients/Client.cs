@@ -2,6 +2,9 @@ using TheSwarmClient.Interfaces;
 
 namespace TheSwarmClient.Extendables;
 
+/// <summary>
+/// A base class for custom client handlers - provides user with mandatory controls and utilities
+/// </summary>
 public abstract class SwarmClient
 {
     protected TaskExecutor TaskExecutor { get; set; }
