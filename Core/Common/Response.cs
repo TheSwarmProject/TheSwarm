@@ -1,6 +1,6 @@
 using System.Text;
 
-namespace TheSwarmClient.Common;
+namespace TheSwarm.Common;
 
 /// <summary>
 /// Object, used to provide ResultsListener with information on request's execution.

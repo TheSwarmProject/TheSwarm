@@ -1,7 +1,7 @@
 using System.Xml;
-using TheSwarmClient.Common;
+using TheSwarm.Common;
 
-namespace TheSwarmClient.Configuration.Modules;
+namespace TheSwarm.Configuration.Modules;
 
 public class LoggingConfig
 {

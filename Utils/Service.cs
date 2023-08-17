@@ -1,6 +1,6 @@
 using System.Reflection;
 
-namespace TheSwarmClient.Utils;
+namespace TheSwarm.Utils;
 
 public static class AttributeHelper
 {

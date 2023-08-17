@@ -1,6 +1,6 @@
-using TheSwarmClient.Configuration;
+using TheSwarm.Configuration;
 
-namespace TheSwarmClient.Common;
+namespace TheSwarm.Common;
 
 public static class Logger
 {

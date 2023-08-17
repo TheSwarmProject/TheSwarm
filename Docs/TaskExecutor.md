@@ -20,9 +20,9 @@ Let's say we need a custom task loop, and none of existing executors cover it.
 The Swarm client allows us to define a custom executor and use it for running our scenario.
 To do that - we need to inherit our executor type from base **TaskExecutor** class and override **TaskLoop** method:
 ```cs
-using TheSwarmClient.Extendables;
-using TheSwarmClient.Components.Listener;
-using TheSwarmClient.Interfaces;
+using TheSwarm.Extendables;
+using TheSwarm.Components.Listener;
+using TheSwarm.Interfaces;
 
 public class CustomExecutor : TaskExecutor
 {
@@ -49,7 +49,7 @@ public class CustomExecutor : TaskExecutor
 ```
 Once done, you can use scenario builder's **UseCustomTaskExecutor** method to set it
 ```cs
-SwarmPreparedTestScenario scenario = TheSwarmClient.SwarmBuilder.
+SwarmPreparedTestScenario scenario = TheSwarm.SwarmBuilder.
     InitializeScenario().
         InitializeResultsListener(mode: SwarmListenerMode.Local, printStats: true).
         UseCustomTaskExecutor(new CustomExecutor())

@@ -1,6 +1,6 @@
-using TheSwarmClient.Extendables;
+using TheSwarm.Extendables;
 
-namespace TheSwarmClient.Interfaces;
+namespace TheSwarm.Interfaces;
 
 /// <summary>
 /// A representation of an executor thread - a container for client's Thread with extra bits and pieces for fine-grained control.

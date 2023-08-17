@@ -1,7 +1,7 @@
 using System.Xml;
-using TheSwarmClient.Configuration.Modules;
+using TheSwarm.Configuration.Modules;
 
-namespace TheSwarmClient.Configuration;
+namespace TheSwarm.Configuration;
 
 public static class ConfigManager
 {

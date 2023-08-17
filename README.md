@@ -1,8 +1,8 @@
 # The Swarm
-The Swarm client is a light-weight, flexible and scalable performance testing tool. Write your test scenarios and define user behavior using plain C# code, store task sets/sequences/scenarios and re-use them, execute the tests any way you like - whether integrated into existing testing solutions or executed on it's own.
+The Swarm is a light-weight, flexible and scalable performance testing tool. Write your test scenarios and define user behavior using plain C# code, store task sets/sequences/scenarios and re-use them, execute the tests any way you like - whether integrated into existing testing solutions or executed on it's own.
 
 ## Downloads
-The latest releases are available on [NuGet](https://www.nuget.org/packages/TheSwarmClient) or [GitHub](https://github.com/TheSwarmProject/TheSwarmClient/releases).
+The latest releases are available on [NuGet](https://www.nuget.org/packages/TheSwarm) or [GitHub](https://github.com/TheSwarmProject/TheSwarm/releases).
 
 ## Getting started
 To prepare our first scenario we need to prepare several components:
@@ -14,9 +14,9 @@ Task sets are created by marking the type with **SwarmTaskSet** annotation. Task
 - The task methods themselves, decorated with **SwarmTask** attribute
 - Optionally, task set can have pre/after test methods (**SwarmTaskSetSetup** and **SwarmTaskSetTeardown**) and pre/after task methods (**SwarmBeforeTask** and **SwarmAfterTask**) - former are executed once in the beginning and end of the test, and the latter are executed before and after each task.
 ```cs
-using TheSwarmClient;
-using TheSwarmClient.Clients;
-using TheSwarmClient.Attributes;
+using TheSwarm;
+using TheSwarm.Clients;
+using TheSwarm.Attributes;
 
 [SwarmTaskSet(TaskSetID = "TC-1", Description = "Test taskset")]
 public class TestClass
@@ -49,7 +49,7 @@ public class TestClass
 
 Once task set is defined, we can create the scenario itself:
 ```cs
-SwarmPreparedTestScenario scenario = TheSwarmClient.SwarmBuilder
+SwarmPreparedTestScenario scenario = TheSwarm.SwarmBuilder
     .InitializeScenario()
         .InitializeResultsListener(mode: SwarmListenerMode.Local, printStats: true)     // Initialize local results listener and enable current stats printing in console
         .InitializeLoopedTaskExecutor()                                                 // Initialize looped task executor
@@ -65,6 +65,6 @@ scenario.RunScenario();                                                         
 ```
 
 ## Links
-- [GitHub repository](https://github.com/TheSwarmProject/TheSwarmClient)
-- [Issues tracker](https://github.com/TheSwarmProject/TheSwarmClient/issues)
-- [NuGet page](https://www.nuget.org/packages/TheSwarmClient)
+- [GitHub repository](https://github.com/TheSwarmProject/TheSwarm)
+- [Issues tracker](https://github.com/TheSwarmProject/TheSwarm/issues)
+- [NuGet page](https://www.nuget.org/packages/TheSwarm)

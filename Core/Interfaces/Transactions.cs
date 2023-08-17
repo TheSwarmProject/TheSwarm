@@ -1,8 +1,8 @@
-using TheSwarmClient.Common;
-using TheSwarmClient.Extendables;
-using TheSwarmClient.Utils;
+using TheSwarm.Common;
+using TheSwarm.Extendables;
+using TheSwarm.Utils;
 
-namespace TheSwarmClient.Interfaces;
+namespace TheSwarm.Interfaces;
 
 /// <summary>
 /// Transaction is a set of procedures that yields a certain result. For instance - opening a web page triggers requests the page itself, then it pulls all the resources

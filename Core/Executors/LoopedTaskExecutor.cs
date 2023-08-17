@@ -1,8 +1,8 @@
-using TheSwarmClient.Components.Listener;
-using TheSwarmClient.Extendables;
-using TheSwarmClient.Interfaces;
+using TheSwarm.Components.Listener;
+using TheSwarm.Extendables;
+using TheSwarm.Interfaces;
 
-namespace TheSwarmClient.Components.Executors;
+namespace TheSwarm.Components.Executors;
 
 /// <summary>
 /// Looped task executor. Picks weight-random tasks from the pool and keeps working until the command to shut-down is given.

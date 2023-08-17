@@ -1,6 +1,6 @@
 using System.Xml;
 
-namespace TheSwarmClient.Configuration.Modules;
+namespace TheSwarm.Configuration.Modules;
 
 public class GeneralConfig
 {

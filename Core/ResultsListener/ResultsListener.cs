@@ -1,13 +1,13 @@
-using TheSwarmClient.Common;
-using TheSwarmClient.Utils;
-using TheSwarmClient.Attributes;
-using TheSwarmClient.Configuration;
+using TheSwarm.Common;
+using TheSwarm.Utils;
+using TheSwarm.Attributes;
+using TheSwarm.Configuration;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
 using System.Reflection;
 
-namespace TheSwarmClient.Components.Listener;
+namespace TheSwarm.Components.Listener;
 
 /// <summary>
 /// One of the main workhorses of the system - it collects data gathered by executors, calculates averages, 

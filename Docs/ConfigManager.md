@@ -9,7 +9,7 @@ On start-up, client checks-up project root folder (i.e. where the process is lau
 
 ## File format and current supported entries
 ```xml
-<TheSwarmClient>
+<TheSwarm>
     <General>
         <ResultsFolder>SwarmResults</ResultsFolder>
     </General>
@@ -32,5 +32,5 @@ On start-up, client checks-up project root folder (i.e. where the process is lau
             <Channel LogLevel="4">ResultsListener</Channel>
         </LoggingChannels>
     </Logger>
-</TheSwarmClient>
+</TheSwarm>
 ```

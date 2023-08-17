@@ -1,8 +1,8 @@
-using TheSwarmClient.Common;
-using TheSwarmClient.Utils;
-using TheSwarmClient.Extendables;
+using TheSwarm.Common;
+using TheSwarm.Utils;
+using TheSwarm.Extendables;
 
-namespace TheSwarmClient.Clients;
+namespace TheSwarm.Clients;
 
 /// <summary>
 /// Main workhorse - HTTP client wrapper with exposed client instance to allow user for more fine-grained control over the context.

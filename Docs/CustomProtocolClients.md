@@ -10,8 +10,8 @@ In this particular example - we'll create a simple implementation of raw Socket 
 using System.Text;
 using System.Net;
 using System.Net.Sockets;
-using TheSwarmClient.Common;
-using TheSwarmClient.Extendables;
+using TheSwarm.Common;
+using TheSwarm.Extendables;
 
 public class SocketClient : SwarmClient
 {

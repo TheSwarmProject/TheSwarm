@@ -1,6 +1,6 @@
-using TheSwarmClient.Interfaces;
+using TheSwarm.Interfaces;
 
-namespace TheSwarmClient.Extendables;
+namespace TheSwarm.Extendables;
 
 /// <summary>
 /// A base class for custom client handlers - provides user with mandatory controls and utilities

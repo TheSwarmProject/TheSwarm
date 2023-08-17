@@ -1,4 +1,4 @@
-namespace TheSwarmClient.Common;
+namespace TheSwarm.Common;
 
 public class LogMessage
 {
