@@ -5,6 +5,9 @@ using TheSwarm.Attributes;
 
 namespace TheSwarm;
 
+/// <summary>
+/// A container type for test scenario - used as an output of SwarmBuilder initializer.
+/// </summary>
 public class SwarmPreparedTestScenario
 {
     private Thread?             scenarioRunner      { get; set; }

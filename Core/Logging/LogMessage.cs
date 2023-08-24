@@ -1,5 +1,8 @@
 namespace TheSwarm.Common;
 
+/// <summary>
+/// A simple representation of a log message. Initialized by LoggingChannel and passed down to logger's queue for further processing.
+/// </summary>
 public class LogMessage
 {
     public string           Source      { get; private set; } = "";

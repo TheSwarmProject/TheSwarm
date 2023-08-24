@@ -6,7 +6,7 @@ using TheSwarm.Attributes;
 namespace TheSwarm.Components.Executors;
 
 /// <summary>
-/// Default task executor class. Used to run one-time task and then expire.
+/// Default task executor class. Used to run each task once and then expire.
 /// </summary>
 public class OneShotTaskExecutor : TaskExecutor
 {

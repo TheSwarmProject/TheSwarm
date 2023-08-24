@@ -1,5 +1,8 @@
 namespace TheSwarm.Common;
 
+/// <summary>
+/// An instance of a logger - represents a specific channel, provided by logger itself.
+/// </summary>
 public class LoggingChannel
 {
     private string          ChannelName     { get; set; }

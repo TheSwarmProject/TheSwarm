@@ -16,7 +16,7 @@ public static class Logger
 
     private static string                               currentLogFileName      { get; set; } = "";
 
-    // Since there was a notable loss of data saved to file, we use queue and daemon thread to keep things uniform
+    // Since there was a notable loss of data saved to file, we use queue to keep things things uniform
     // Probably a bit of an overkill, but it doesn't seem to consume overly much resources - all processes are trivial
     private static Queue<LogMessage>                    messagesToProcess       { get; set; } = new Queue<LogMessage>();
 

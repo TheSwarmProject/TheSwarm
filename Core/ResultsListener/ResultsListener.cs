@@ -53,6 +53,11 @@ public class ResultsListener
         threadActive = false;
     }
 
+    /// <summary>
+    /// Main workhorse - registers a response and stores it's values into respective Result tracker.
+    /// If there are no trackers for this particular request - a new one is created.
+    /// </summary>
+    /// <param name="response"></param>
     public void LogEntry(Response response)
     {
         string key = $"({response.Method}){response.Name}";
@@ -70,6 +75,9 @@ public class ResultsListener
         }
     }
 
+    /// <summary>
+    /// Aggregates results data and copies it along with static reporter files, thus generating an HTML report for the test
+    /// </summary>
     public void GenerateReport()
     {
         if (mode == SwarmListenerMode.Local || mode == SwarmListenerMode.Hub)

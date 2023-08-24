@@ -6,7 +6,7 @@ using System.Diagnostics;
 namespace TheSwarm.Extendables;
 
 /// <summary>
-/// Task Executor template class - defines the basic attributes and methods to be used by all task executor types.
+/// Task Executor base class - defines the basic attributes and methods to be used by all task executor types.
 /// </summary>
 public abstract class TaskExecutor
 {
@@ -237,6 +237,9 @@ public abstract class TaskExecutor
         return this;
     }
 
+    /// <summary>
+    /// Finisher function - triggers active clients shutdown, stops the results listener thread and generates the report
+    /// </summary>
     public void Finish()
     {
         log.Info("Finish reached. Wrapping up...");
