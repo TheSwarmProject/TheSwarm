@@ -2,7 +2,7 @@
 <package xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
     <metadata>
         <id>TheSwarm</id>
-        <version>0.24</version>
+        <version>1.0.0</version>
         <authors>VizanArkonin</authors>
         <owners>VizanArkonin</owners>
         <projectUrl>https://github.com/TheSwarmProject/TheSwarm</projectUrl>
