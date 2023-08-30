@@ -73,8 +73,27 @@ namespace TheSwarm.Attributes
     [System.AttributeUsage(System.AttributeTargets.Property)]
     public class RegisterSwarmClient : System.Attribute { }
 
+    /// <summary>
+    /// Marks the type as load scenarios repository - this will include the type in assembly scan
+    /// </summary>
     [System.AttributeUsage(System.AttributeTargets.Class)]
-    public class SwarmTestScenariosRepository : System.Attribute { }
+    public class SwarmLoadScenariosRepository : System.Attribute { }
+
+    /// <summary>
+    /// Marks the field as Load profile scenario.
+    /// </summary>
+    [System.AttributeUsage(System.AttributeTargets.Field)]
+    public class SwarmLoadScenario : System.Attribute
+    {
+        public string ScenarioID    { get; set; }
+        public string Description   { get; set; }
+
+        public SwarmLoadScenario()
+        {
+            this.ScenarioID = "";
+            this.Description = "";
+        }
+    }
 
     [System.AttributeUsage(System.AttributeTargets.Method)]
     public class SwarmTestScenario : System.Attribute

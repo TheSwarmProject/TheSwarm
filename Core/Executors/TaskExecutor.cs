@@ -11,7 +11,7 @@ namespace TheSwarm.Extendables;
 public abstract class TaskExecutor
 {
     protected LoggingChannel        log             { get; init; }
-    protected ResultsListener?      resultsListener { get; set; }
+    internal ResultsListener?       ResultsListener { get; set; }
     protected List<ExecutorThread>  executorThreads { get; } = new List<ExecutorThread>();
 
     internal Type? TaskSet { get; set; }
@@ -33,7 +33,7 @@ public abstract class TaskExecutor
         this.log = Logger.CreateChannel(this.GetType().Name);
     }
 
-    public void SetResultsListener(ResultsListener resultsListener) => this.resultsListener = resultsListener;
+    public void SetResultsListener(ResultsListener resultsListener) => this.ResultsListener = resultsListener;
 
     /// <summary>
     /// This method is merely a proxy between client and results listener - it simply routes Response
@@ -42,7 +42,7 @@ public abstract class TaskExecutor
     /// <param name="response">Response instance</param>
     public void LogEntry(Response response)
     {
-        resultsListener.LogEntry(response);
+        ResultsListener.LogEntry(response);
     }
 
     public void ReportRequestExecuted()
@@ -263,8 +263,8 @@ public abstract class TaskExecutor
                 }
             }
 
-            resultsListener.Stop();
-            resultsListener.GenerateReport();
+            ResultsListener.Stop();
+            ResultsListener.GenerateReport();
         }
     }
 }

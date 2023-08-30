@@ -66,6 +66,12 @@ public static class SwarmBuilder
             return this;
         }
 
+        public Builder SetLoadScenario(string scenarioID)
+        {
+            scenario.SetLoadScenario(scenarioID);
+            return this;
+        }
+
         public Builder SetExecutorSequence(Action<TaskExecutor> action)
         {
             scenario.SetExecutorSequence(action);
